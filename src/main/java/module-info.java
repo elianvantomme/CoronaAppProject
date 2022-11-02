@@ -1,9 +1,10 @@
-module com.example.code {
+module visitor.clients {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.rmi;
 
+    exports clients.visitor;
+    exports services.registrar;
 
-    opens visitor to javafx.fxml;
-    exports visitor;
+    opens clients.visitor;
 }
