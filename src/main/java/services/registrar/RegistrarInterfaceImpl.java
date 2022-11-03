@@ -44,7 +44,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
 
     @Override
     public Set<String> loginVisitor(String phoneNumber) throws Exception {
-        if(!registeredPhoneNumbers.add(phoneNumber)){ // only add new users!
+        if(!registeredPhoneNumbers.add(phoneNumber)){ // only add new users
             return generateNewTokens(phoneNumber);
         }
         return new HashSet<>();

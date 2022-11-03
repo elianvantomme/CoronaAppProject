@@ -1,4 +1,6 @@
 package services;
+import services.matching_service.MatchingServiceInterfaceImp;
+import services.mixing_proxy.MixingProxyInterfaceImpl;
 import services.registrar.RegistrarInterfaceImpl;
 
 import java.rmi.RemoteException;
@@ -10,6 +12,10 @@ public class ServerMain {
         try {
             Registry registrarRegistry = LocateRegistry.createRegistry(4000);
             registrarRegistry.rebind("RegistrarService", new RegistrarInterfaceImpl());
+            Registry matchingServiceRegistry = LocateRegistry.createRegistry(4001);
+            matchingServiceRegistry.rebind("MatchingService", new MatchingServiceInterfaceImp());
+            Registry mixingProxyRegistry = LocateRegistry.createRegistry(4002);
+            mixingProxyRegistry.rebind("MixingProxyService", new MixingProxyInterfaceImpl());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
