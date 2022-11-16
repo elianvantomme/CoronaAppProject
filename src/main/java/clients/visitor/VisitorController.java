@@ -26,7 +26,7 @@ public class VisitorController {
     @FXML
     public void onClickSubmitPhoneNumber() throws Exception {
         if (!visitorPhoneNumberField.getText().equals("")){
-            validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
+//            validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
             System.out.println(Arrays.toString(validTokens.toArray()));
         }
     }

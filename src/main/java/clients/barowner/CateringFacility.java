@@ -11,4 +11,12 @@ public class CateringFacility implements Serializable {
         this.businessNumber = businessNumber;
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "CateringFacility{" +
+                "businessNumber='" + businessNumber + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
