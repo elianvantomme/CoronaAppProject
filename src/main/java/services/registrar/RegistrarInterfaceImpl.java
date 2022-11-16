@@ -65,8 +65,9 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         LocalDate date = LocalDate.now();
         Set<String> newUserTokens = new HashSet<>();
 
-        oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
-
+        if(oldTokensMap.containsKey(phoneNumber)){
+            oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
+        }
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
