@@ -21,9 +21,17 @@ public class BarOwnerClient {
             Registry registrarRegistry = LocateRegistry.getRegistry("localhost", 4000);
             RegistrarInterface registrarImpl = (RegistrarInterface) registrarRegistry.lookup("RegistrarService");
 
-            System.out.print("Enter the phone number of the facility: ");
-            int cfPhoneNumber = Integer.parseInt(sc.nextLine());
-            pseudonym = registrarImpl.loginCF(cfPhoneNumber);
+            System.out.println("Enter the name of the facility");
+            String name = sc.nextLine();
+            System.out.println("Enter the business number of the facility");
+            String businessNumber = sc.nextLine();
+            System.out.println("Enter the location of the facility");
+            String address = sc.nextLine();
+            System.out.println("Enter the phone number of the facility");
+            String phoneNumber = sc.nextLine();
+            CateringFacility cateringFacility = new CateringFacility(businessNumber, name, address, phoneNumber);
+
+            pseudonym = registrarImpl.loginCF(cateringFacility);
             System.out.println(pseudonym);
             System.out.println("The qr data string for");
             //TODO generate the QR code based on the random value, CF info, hash
