@@ -28,6 +28,8 @@ public class VisitorController {
         if (!visitorPhoneNumberField.getText().equals("")){
             validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
             System.out.println(Arrays.toString(validTokens.toArray()));
+        }else{
+            System.out.println("Empty");
         }
     }
 

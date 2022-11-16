@@ -1,6 +1,8 @@
 package services.registrar;
 
+import clients.barowner.CateringFacility;
 import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey.*;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,31 +16,40 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
-    Map<Integer, SecretKey> secretKeyMap = new HashMap<>();
-    Set<String> registeredPhoneNumbers = new HashSet<>();
-    Map<String, String> oldTokensMap = new HashMap<>();
-    Map<String, String> validTokensMap = new HashMap<>();
-    public RegistrarInterfaceImpl () throws RemoteException{}
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    SecretKey masterSecretKey = keyGenerator.generateKey();
+    Set<String> registeredPhoneNumbers;
+    Map<String, Set<String>> oldTokensMap;
+    Map<String, Set<String>> validTokensMap;
+
+    public RegistrarInterfaceImpl () throws RemoteException, NoSuchAlgorithmException {
+         keyGenerator = KeyGenerator.getInstance("AES");
+         masterSecretKey = keyGenerator.generateKey();
+         registeredPhoneNumbers = new HashSet<>();
+         oldTokensMap = new HashMap<>();
+         validTokensMap = new HashMap<>();
+    }
 
     @Override
-    public String loginCF(int phoneNumber) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public String loginCF(CateringFacility cateringFacility) throws NoSuchAlgorithmException, InvalidKeySpecException {
         LocalDate localDate = LocalDate.now();
 
         //Check if the CF already is registered
-        if (!secretKeyMap.containsKey(phoneNumber)){
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            SecretKey masterSecretKey = keyGenerator.generateKey();
-            secretKeyMap.put(phoneNumber, masterSecretKey);
-        }
+//        if (!secretKeyMap.containsKey(phoneNumber)){
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+//            SecretKey masterSecretKey = keyGenerator.generateKey();
+//            secretKeyMap.put(phoneNumber, masterSecretKey);
+//        }
 
         //Generate the Daily Secret key from: master secret key, CF info, day
+        String KDFinput = cateringFacility.toString() + masterSecretKey.toString() + localDate;
         SecretKeyFactory kf = SecretKeyFactory.getInstance("DESede");
-        KeySpec keySpecs = new SecretKeySpec(secretKeyMap.get(phoneNumber).toString().getBytes(StandardCharsets.UTF_8), "AES");
+        KeySpec keySpecs = new SecretKeySpec(KDFinput.getBytes(StandardCharsets.UTF_8), "AES");
         SecretKey dailySecretKey = kf.generateSecret(keySpecs);
 
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] byteArray = dailySecretKey.toString().concat(String.valueOf(phoneNumber)).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
+        byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
         return Base64.getEncoder().encodeToString(md.digest(byteArray));
     }
 
