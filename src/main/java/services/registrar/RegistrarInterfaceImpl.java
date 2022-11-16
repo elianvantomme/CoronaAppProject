@@ -65,6 +65,9 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         LocalDate date = LocalDate.now();
         Set<String> newUserTokens = new HashSet<>();
 
+        oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
+
+
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         PrivateKey privateKey = keyPair.getPrivate();
@@ -76,9 +79,9 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
             byte[] tokenString = (String.valueOf(Math.random()).concat(date.toString())).getBytes(StandardCharsets.UTF_8);
             signature.update(tokenString);
             String signedToken = Base64.getEncoder().encodeToString(tokenString);
-            validTokensMap.put(signedToken, phoneNumber);
             newUserTokens.add(signedToken);
         }
+        validTokensMap.put(phoneNumber,newUserTokens);
         return newUserTokens;
     }
 }
