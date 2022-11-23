@@ -1,8 +1,12 @@
 package clients.visitor;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import services.registrar.RegistrarInterface;
 
 import java.net.URL;
@@ -26,8 +30,21 @@ public class VisitorController {
     @FXML
     public void onClickSubmitPhoneNumber() throws Exception {
         if (!visitorPhoneNumberField.getText().equals("")){
+
             validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
             System.out.println(Arrays.toString(validTokens.toArray()));
+        }
+        if (!validTokens.isEmpty()){
+            Stage stage = (Stage) SubmitVisitorPhoneNumberButton.getScene().getWindow();
+            stage.close();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("registerVisit-view.fxml"));
+            Parent root = loader.load();
+            RegisterVisitController registerVisitController = loader.getController();
+            registerVisitController.setValidTokens(validTokens);
+            stage = new Stage();
+            stage.setTitle("Corona Tracing App");
+            stage.setScene(new Scene(root));
+            stage.show();
         }
     }
 
