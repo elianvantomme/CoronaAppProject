@@ -69,10 +69,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
             oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
         }
 
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        PrivateKey privateKey = keyPair.getPrivate();
-
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);
         //Create 48 new signed tokens for a certain phone number
