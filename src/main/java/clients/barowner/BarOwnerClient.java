@@ -35,7 +35,7 @@ public class BarOwnerClient {
             System.out.println(pseudonym);
             System.out.println("The qr data string for");
             //TODO generate the QR code based on the random value, CF info, hash
-            double randomDouble = Math.random()*10000;
+            double randomDouble = Math.random();
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] byteArray = String.valueOf(randomDouble).concat(pseudonym).getBytes(StandardCharsets.UTF_8);
             StringBuilder sb = new StringBuilder();

@@ -20,8 +20,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private KeyGenerator keyGenerator;
     private SecretKey masterSecretKey;
     private Set<String> registeredPhoneNumbers;
-//    private Map<String, Set<String>> oldTokensMap;
-//    private Map<String, Set<String>> validTokensMap;
     private Map<String, List<Token>> oldTokensMap;
     private Map<String, List<Token>> validTokensMap;
     private MixingProxyInterface mixingProxyInterface;

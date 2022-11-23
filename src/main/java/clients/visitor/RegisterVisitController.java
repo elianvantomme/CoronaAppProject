@@ -46,16 +46,6 @@ public class RegisterVisitController {
                 .plusMinutes(30 * (dateTime.getMinute() / 30));
         LocalDateTime endTimeInterval = beginTimeInterval.plusMinutes(30);
         if (!validTokens.isEmpty()){
-//            String token = validTokens.iterator().next();
-//            validTokens.remove(token);
-//            usedTokens.add(token);
-//            Capsule capsule = new Capsule(
-//                    beginTimeInterval,
-//                    endTimeInterval,
-//                    token,
-//                    pseudonymHash
-//            );
-//            System.out.println(mixingProxyImpl.registerVisit(capsule));
             SignedObject signedToken = validTokens.remove(0);
             Capsule capsule = new Capsule(
                     beginTimeInterval,
@@ -63,11 +53,17 @@ public class RegisterVisitController {
                     signedToken,
                     pseudonymHash
             );
-            System.out.println(mixingProxyImpl.registerVisit(capsule));
+            byte[] signedHash = mixingProxyImpl.registerVisit(capsule);
+            System.out.println(Base64.getEncoder().encodeToString(signedHash));
+            if(signedHash != null){
+                //TODO: genereer een figuurtje
+            } else {
+                //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
+            }
         }
-//        System.out.println(dateTime);
-//        System.out.println(beginTimeInterval);
-//        System.out.println(endTimeInterval);
+        System.out.println(dateTime);
+        System.out.println(beginTimeInterval);
+        System.out.println(endTimeInterval);
 
     }
     @FXML

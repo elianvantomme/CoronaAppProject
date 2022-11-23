@@ -21,4 +21,9 @@ public class Token implements Serializable {
                 ", localDate=" + localDate +
                 '}';
     }
+
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
 }
