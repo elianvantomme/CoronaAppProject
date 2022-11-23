@@ -4,14 +4,11 @@ import clients.barowner.CateringFacility;
 import services.mixing_proxy.MixingProxyInterface;
 
 import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey.*;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -20,11 +17,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
-    private KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-    private SecretKey masterSecretKey = keyGenerator.generateKey();
+    private KeyGenerator keyGenerator;
+    private SecretKey masterSecretKey;
     private Set<String> registeredPhoneNumbers;
-    private Map<String, Set<String>> oldTokensMap;
-    private Map<String, Set<String>> validTokensMap;
+//    private Map<String, Set<String>> oldTokensMap;
+//    private Map<String, Set<String>> validTokensMap;
+    private Map<String, List<Token>> oldTokensMap;
+    private Map<String, List<Token>> validTokensMap;
     private MixingProxyInterface mixingProxyInterface;
     private KeyPair tokensKeyPair;
 
@@ -72,16 +71,17 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     }
 
     @Override
-    public Set<String> loginVisitor(String phoneNumber) throws Exception {
+    public List<SignedObject> loginVisitor(String phoneNumber) throws Exception {
         if(!registeredPhoneNumbers.add(phoneNumber)){ // only add new users
             return generateNewTokens(phoneNumber);
         }
-        return new HashSet<>();
+        return new ArrayList<>();
     }
 
-    public Set<String> generateNewTokens(String phoneNumber) throws Exception {
+    public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
         LocalDate date = LocalDate.now();
-        Set<String> newUserTokens = new HashSet<>();
+        List<Token> newUserTokens = new ArrayList<>();
+        List<SignedObject> newUserSignedTokens = new ArrayList<>();
 
         if(oldTokensMap.containsKey(phoneNumber)){
             oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
@@ -91,13 +91,19 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         signature.initSign(tokensKeyPair.getPrivate());
         //Create 48 new signed tokens for a certain phone number
         for (int i = 0; i < 48; i++) {
-            byte[] tokenString = (String.valueOf(Math.random()).concat(date.toString())).getBytes(StandardCharsets.UTF_8);
-            signature.update(tokenString);
-            String signedToken = Base64.getEncoder().encodeToString(tokenString);
-            newUserTokens.add(signedToken);
+//            byte[] tokenString = (String.valueOf(Math.random()).concat(date.toString())).getBytes(StandardCharsets.UTF_8);
+//            signature.update(tokenString);
+//            String signedToken = Base64.getEncoder().encodeToString(tokenString);
+//            newUserTokens.add(signedToken);
+            Token token = new Token();
+            SignedObject signedToken = new SignedObject(token, tokensKeyPair.getPrivate(), signature);
+            newUserSignedTokens.add(signedToken);
+            newUserTokens.add(token);
         }
         validTokensMap.put(phoneNumber,newUserTokens);
-        return newUserTokens;
+        return newUserSignedTokens;
     }
+
+
 
 }

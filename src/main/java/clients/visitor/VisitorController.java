@@ -8,15 +8,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import services.registrar.RegistrarInterface;
+import services.registrar.Token;
 
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.security.SignedObject;
+import java.util.*;
 
 public class VisitorController {
     @FXML
@@ -25,14 +25,16 @@ public class VisitorController {
     private TextField visitorPhoneNumberField;
 
     private RegistrarInterface registrarImpl;
-    private Set<String> validTokens = new HashSet<>();
+    private List<SignedObject> validTokens = new ArrayList<>();
 
     @FXML
     public void onClickSubmitPhoneNumber() throws Exception {
         if (!visitorPhoneNumberField.getText().equals("")){
-
             validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
-            System.out.println(Arrays.toString(validTokens.toArray()));
+            System.out.println("validTokens = " + validTokens);
+            for(SignedObject signedObject : validTokens){
+                System.out.println(signedObject.getObject());
+            }
         }
         if (!validTokens.isEmpty()){
             Stage stage = (Stage) SubmitVisitorPhoneNumberButton.getScene().getWindow();

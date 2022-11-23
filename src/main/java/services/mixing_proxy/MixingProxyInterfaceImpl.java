@@ -1,7 +1,9 @@
 package services.mixing_proxy;
 
 import clients.visitor.Capsule;
+import services.registrar.Token;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -20,8 +22,14 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     }
 
     @Override
-    public String registerVisit(Capsule capsule) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        return "Error";
+    public String registerVisit(Capsule capsule) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, ClassNotFoundException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        SignedObject signedToken = capsule.getSignedUserToken();
+        Token token = (Token) signedToken.getObject();
+        System.out.println("token = " + token);
+        if(signedToken.verify(registrarPublicKey, signature)){
+            return "OK";
+        }else return "ERROR";
 
 
         //        Signature signature = Signature.getInstance("SHA256withRSA");

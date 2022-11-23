@@ -1,18 +1,19 @@
 package clients.visitor;
 
 import java.io.Serializable;
+import java.security.SignedObject;
 import java.time.LocalDateTime;
 
 public class Capsule implements Serializable {
     private LocalDateTime startInterval;
     private LocalDateTime endInterval;
-    private String userToken;
+    private SignedObject signedUserToken;
     private String hashRandomNym;
 
-    public Capsule(LocalDateTime startInterval, LocalDateTime endInterval, String userToken, String hashRandomNym) {
+    public Capsule(LocalDateTime startInterval, LocalDateTime endInterval, SignedObject userToken, String hashRandomNym) {
         this.startInterval = startInterval;
         this.endInterval = endInterval;
-        this.userToken = userToken;
+        this.signedUserToken = userToken;
         this.hashRandomNym = hashRandomNym;
     }
 
@@ -24,8 +25,8 @@ public class Capsule implements Serializable {
         return endInterval;
     }
 
-    public String getUserToken() {
-        return userToken;
+    public SignedObject getSignedUserToken() {
+        return signedUserToken;
     }
 
     public String getHashRandomNym() {
