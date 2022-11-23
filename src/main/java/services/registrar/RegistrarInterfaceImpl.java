@@ -1,6 +1,8 @@
 package services.registrar;
 
 import clients.barowner.CateringFacility;
+import services.mixing_proxy.MixingProxyInterface;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey.*;
 import javax.crypto.SecretKey;
@@ -8,6 +10,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -16,18 +20,32 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
-    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-    SecretKey masterSecretKey = keyGenerator.generateKey();
-    Set<String> registeredPhoneNumbers;
-    Map<String, Set<String>> oldTokensMap;
-    Map<String, Set<String>> validTokensMap;
+    private KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    private SecretKey masterSecretKey = keyGenerator.generateKey();
+    private Set<String> registeredPhoneNumbers;
+    private Map<String, Set<String>> oldTokensMap;
+    private Map<String, Set<String>> validTokensMap;
+    private MixingProxyInterface mixingProxyInterface;
+    private KeyPair tokensKeyPair;
 
-    public RegistrarInterfaceImpl () throws RemoteException, NoSuchAlgorithmException {
+    public RegistrarInterfaceImpl () throws Exception {
          keyGenerator = KeyGenerator.getInstance("AES");
          masterSecretKey = keyGenerator.generateKey();
          registeredPhoneNumbers = new HashSet<>();
          oldTokensMap = new HashMap<>();
          validTokensMap = new HashMap<>();
+         mixingProxyInterface = (MixingProxyInterface) LocateRegistry.
+                 getRegistry("localhost", 4002).
+                 lookup("MixingProxyService");
+        tokensKeyPair = generateKeyPairForSigningTokens();
+    }
+
+    public KeyPair generateKeyPairForSigningTokens() throws Exception{
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        //send this public key to the mixingproxy
+        mixingProxyInterface.setRegistrarPublicKey(keyPair.getPublic());
+        return keyPair;
     }
 
     @Override
@@ -70,7 +88,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         }
 
         Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
+        signature.initSign(tokensKeyPair.getPrivate());
         //Create 48 new signed tokens for a certain phone number
         for (int i = 0; i < 48; i++) {
             byte[] tokenString = (String.valueOf(Math.random()).concat(date.toString())).getBytes(StandardCharsets.UTF_8);
@@ -81,4 +99,5 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         validTokensMap.put(phoneNumber,newUserTokens);
         return newUserTokens;
     }
+
 }
