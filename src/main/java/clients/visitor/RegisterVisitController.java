@@ -56,6 +56,7 @@ public class RegisterVisitController {
             byte[] signedHash = mixingProxyImpl.registerVisit(capsule);
             System.out.println(Base64.getEncoder().encodeToString(signedHash));
             if(signedHash != null){
+
                 //TODO: genereer een figuurtje
             } else {
                 //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
