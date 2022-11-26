@@ -1,7 +1,11 @@
 package clients.visitor;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarInterface;
 import services.registrar.RegistrarInterfaceImpl;
@@ -27,6 +31,7 @@ public class RegisterVisitController {
 
     private List<SignedObject> validTokens = new ArrayList<>();
     private List<SignedObject> usedTokens = new ArrayList<>();
+    byte[] signedHash;
 
     public void setValidTokens(List<SignedObject> validTokens) {
         this.validTokens = validTokens;
@@ -53,18 +58,24 @@ public class RegisterVisitController {
                     signedToken,
                     pseudonymHash
             );
-            byte[] signedHash = mixingProxyImpl.registerVisit(capsule);
+            signedHash = mixingProxyImpl.registerVisit(capsule);
             System.out.println(Base64.getEncoder().encodeToString(signedHash));
             if(signedHash != null){
-
+                Stage stage = (Stage) qrDataStringField.getScene().getWindow();
+                stage.close();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("figureControl-view.fxml"));
+                Parent root = loader.load();
+                FigureControlController figureControlController = loader.getController();
+                figureControlController.setFigureHash(Base64.getEncoder().encodeToString(signedHash));
+                stage = new Stage();
+                stage.setTitle("Corona Tracing App");
+                stage.setScene(new Scene(root));
+                stage.show();
                 //TODO: genereer een figuurtje
             } else {
                 //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
             }
         }
-        System.out.println(dateTime);
-        System.out.println(beginTimeInterval);
-        System.out.println(endTimeInterval);
 
     }
     @FXML
@@ -76,5 +87,4 @@ public class RegisterVisitController {
             e.printStackTrace();
         }
     }
-
 }

@@ -24,6 +24,8 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private Map<String, List<Token>> validTokensMap;
     private MixingProxyInterface mixingProxyInterface;
     private KeyPair tokensKeyPair;
+    private List<String> visitorList;
+    private List<CateringFacility> cateringFacilityList;
 
     public RegistrarInterfaceImpl () throws Exception {
          keyGenerator = KeyGenerator.getInstance("AES");
@@ -35,6 +37,8 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
                  getRegistry("localhost", 4002).
                  lookup("MixingProxyService");
         tokensKeyPair = generateKeyPairForSigningTokens();
+        visitorList = new ArrayList<>();
+        cateringFacilityList = new ArrayList<>();
     }
 
     public KeyPair generateKeyPairForSigningTokens() throws Exception{
@@ -65,15 +69,16 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
+        cateringFacilityList.add(cateringFacility);
         return Base64.getEncoder().encodeToString(md.digest(byteArray));
     }
 
     @Override
     public List<SignedObject> loginVisitor(String phoneNumber) throws Exception {
         if(!registeredPhoneNumbers.add(phoneNumber)){ // only add new users
-            return generateNewTokens(phoneNumber);
+            visitorList.add(phoneNumber);
         }
-        return new ArrayList<>();
+        return generateNewTokens(phoneNumber);
     }
 
     public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
