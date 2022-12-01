@@ -131,6 +131,10 @@ public class RegisterVisitController {
         log.setLeaveTime(LocalDateTime.now());
     }
     @FXML
+    public void submitLogsDoc(){
+
+    }
+    @FXML
     public void initialize(){
         qrDataStringField.setVisible(true);
         SubmitButtonDataString.setVisible(true);

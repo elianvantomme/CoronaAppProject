@@ -26,6 +26,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
 
     public MixingProxyInterfaceImpl() throws Exception {
         usedTokens = new ArrayList<>();
+        capsuleList = new ArrayList<>();
         mixingProxyKeyPair = generateKeyPair();
         sig = Signature.getInstance("SHA256withRSA");
         sig.initSign(mixingProxyKeyPair.getPrivate());

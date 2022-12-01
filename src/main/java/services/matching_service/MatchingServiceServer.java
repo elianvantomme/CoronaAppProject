@@ -1,6 +1,8 @@
 package services.matching_service;
 
-import java.rmi.RemoteException;
+import services.mixing_proxy.MixingProxyInterfaceImpl;
+import services.mixing_proxy.MixingProxyServer;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -9,10 +11,9 @@ public class MatchingServiceServer {
         try {
             Registry matchingServiceRegistry = LocateRegistry.createRegistry(4001);
             matchingServiceRegistry.rebind("MatchingService", new MatchingServiceInterfaceImp());
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         System.out.println("Matching service server system is ready");
     }
     public static void main(String[] args) {

@@ -3,6 +3,7 @@ package services.matching_service;
 import clients.visitor.Capsule;
 import clients.visitor.LogEntry;
 
+import java.rmi.server.UnicastRemoteObject;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignedObject;
@@ -10,16 +11,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchingServiceInterfaceImp implements MatchingServiceInterface{
+public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements MatchingServiceInterface{
 
     private List<Capsule> capsuleList;
     private List<Capsule> uninformdInfectedCapsules;
     private List<Capsule> informdInfectedCapsules;
     private List<PublicKey> doctorPublicKeys;
 
-
-    MatchingServiceInterfaceImp(){
+    public MatchingServiceInterfaceImp() throws Exception{
         capsuleList = new ArrayList<>();
+        uninformdInfectedCapsules = new ArrayList<>();
+        informdInfectedCapsules = new ArrayList<>();
+        doctorPublicKeys = new ArrayList<>();
     }
 
     @Override

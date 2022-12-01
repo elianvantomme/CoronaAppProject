@@ -6,6 +6,7 @@ module visitor.clients {
     exports clients.visitor;
     exports services.registrar;
     exports services.mixing_proxy;
+    exports services.matching_service;
 
     opens clients.visitor;
 }
