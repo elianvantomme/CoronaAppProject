@@ -66,7 +66,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         KeySpec keySpecs = new SecretKeySpec(KDFinput.getBytes(StandardCharsets.UTF_8), "AES");
         SecretKey dailySecretKey = kf.generateSecret(keySpecs);
 
-
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
         cateringFacilityList.add(cateringFacility);

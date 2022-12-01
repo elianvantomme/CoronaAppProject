@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,13 +8,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="346.0" prefWidth="652.0" style="-fx-background-color: #DCDCDC;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clients.visitor.RegisterVisitController">
+<AnchorPane prefHeight="346.0" prefWidth="651.0" style="-fx-background-color: #DCDCDC;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clients.visitor.RegisterVisitController">
    <children>
-      <Pane layoutX="89.0" layoutY="73.0" prefHeight="200.0" prefWidth="469.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="0.0">
+      <Pane layoutX="78.0" layoutY="73.0" prefHeight="346.0" prefWidth="467.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="SubmitButtonDataString" layoutX="12.0" layoutY="238.0" mnemonicParsing="false" onAction="#onClickSubmitDataString" prefHeight="31.0" prefWidth="450.0" text="Submit" />
-            <TextField fx:id="qrDataStringField" layoutX="12.0" layoutY="197.0" prefHeight="31.0" prefWidth="450.0" promptText="Enter a QR data string" />
+            <Button fx:id="SubmitButtonDataString" layoutX="12.0" layoutY="238.0" mnemonicParsing="false" onAction="#onClickSubmitDataString" prefHeight="31.0" prefWidth="419.0" text="Submit" />
+            <TextField fx:id="qrDataStringField" layoutX="12.0" layoutY="197.0" prefHeight="31.0" prefWidth="419.0" promptText="Enter a QR data string" />
+            <Button fx:id="leaveCFButton" layoutX="115.0" layoutY="277.0" mnemonicParsing="false" onAction="#leaveCateringFacility" prefHeight="31.0" prefWidth="216.0" text="Leave" />
+            <Canvas fx:id="FigureDisplay" height="200.0" layoutX="113.0" layoutY="73.0" width="216.0" />
          </children>
       </Pane>
       <Text layoutX="226.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Corona Master App" textAlignment="CENTER" wrappingWidth="222.07373046875" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="204.0">
@@ -21,5 +23,6 @@
             <Font name="Comic Sans MS" size="23.0" />
          </font>
       </Text>
+      <Button fx:id="medicButton" layoutX="562.0" layoutY="14.0" mnemonicParsing="false" onAction="#submitLogsDoc" prefHeight="31.0" prefWidth="76.0" text="MEDIC!" />
    </children>
 </AnchorPane>

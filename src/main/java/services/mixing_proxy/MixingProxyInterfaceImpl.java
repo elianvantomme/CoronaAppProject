@@ -44,14 +44,13 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
         if(signedToken.verify(registrarPublicKey, signature)){
             if(!usedTokens.contains(token)){
                 if(token.getLocalDate().isEqual(LocalDate.now())){
-                    System.out.println("capsule.getHashRandomNym() = " + capsule.getHashRandomNym());
-                    sig.update(capsule.getHashRandomNym().getBytes());
+                    System.out.println("capsule.getHashRandomNym() = " + Arrays.toString(capsule.getHashRandomNym()));
+                    sig.update(capsule.getHashRandomNym());
                     byte[] signedHash = sig.sign();
                     return signedHash;
                 }
             }
         }
-
         return null;
 
         //        Signature signature = Signature.getInstance("SHA256withRSA");

@@ -8,9 +8,9 @@ public class Capsule implements Serializable {
     private LocalDateTime startInterval;
     private LocalDateTime endInterval;
     private SignedObject signedUserToken;
-    private String hashRandomNym;
+    private byte[] hashRandomNym;
 
-    public Capsule(LocalDateTime startInterval, LocalDateTime endInterval, SignedObject userToken, String hashRandomNym) {
+    public Capsule(LocalDateTime startInterval, LocalDateTime endInterval, SignedObject userToken, byte[] hashRandomNym) {
         this.startInterval = startInterval;
         this.endInterval = endInterval;
         this.signedUserToken = userToken;
@@ -29,7 +29,7 @@ public class Capsule implements Serializable {
         return signedUserToken;
     }
 
-    public String getHashRandomNym() {
+    public byte[] getHashRandomNym() {
         return hashRandomNym;
     }
 }

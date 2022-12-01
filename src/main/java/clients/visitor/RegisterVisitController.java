@@ -4,7 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarInterface;
@@ -27,11 +31,23 @@ public class RegisterVisitController {
     Map<LocalDateTime, String[]> visitedCFs = new HashMap<>();
     @FXML
     private TextField qrDataStringField;
-    private MixingProxyInterface mixingProxyImpl;
+    @FXML
+    private Button SubmitButtonDataString;
+    @FXML
+    private Canvas FigureDisplay;
+    @FXML
+    private Button leaveCFButton;
+    @FXML
+    private Button medicButton;
 
-    private List<SignedObject> validTokens = new ArrayList<>();
-    private List<SignedObject> usedTokens = new ArrayList<>();
-    byte[] signedHash;
+    public RegisterVisitController() throws Exception {
+        this.visitedCFs = new ArrayList<>();
+        this.capsules = new ArrayList<>();
+        this.doctor = new DoctorClient();
+        this.validTokens = new ArrayList<>();
+        this.usedTokens = new ArrayList<>();
+        this.logs = new ArrayList<>();
+    }
 
     public void setValidTokens(List<SignedObject> validTokens) {
         this.validTokens = validTokens;
@@ -39,8 +55,12 @@ public class RegisterVisitController {
     @FXML
     private void onClickSubmitDataString() throws Exception {
         LocalDateTime dateTime = LocalDateTime.now();
+        String[] parts = new String[3];
+        parts[0]= dateTime.toString();
+        parts[1]= "null";
+        parts[2]= qrDataStringField.getText();
+        visitedCFs.add(parts);
         String[] qrDataString = qrDataStringField.getText().split("@");
-        visitedCFs.put(dateTime, qrDataString);
 
         String randomDouble = qrDataString[0];
         String cateringFacilityInfoString = qrDataString[1];
@@ -56,22 +76,25 @@ public class RegisterVisitController {
                     beginTimeInterval,
                     endTimeInterval,
                     signedToken,
-                    pseudonymHash
+                    pseudonymHash.getBytes()
             );
             signedHash = mixingProxyImpl.registerVisit(capsule);
             System.out.println(Base64.getEncoder().encodeToString(signedHash));
             if(signedHash != null){
-                Stage stage = (Stage) qrDataStringField.getScene().getWindow();
-                stage.close();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("figureControl-view.fxml"));
-                Parent root = loader.load();
-                FigureControlController figureControlController = loader.getController();
-                figureControlController.setFigureHash(Base64.getEncoder().encodeToString(signedHash));
-                stage = new Stage();
-                stage.setTitle("Corona Tracing App");
-                stage.setScene(new Scene(root));
-                stage.show();
-                //TODO: genereer een figuurtje
+                qrDataStringField.setVisible(false);
+                SubmitButtonDataString.setVisible(false);
+                medicButton.setVisible(false);
+                leaveCFButton.setVisible(true);
+                FigureDisplay.setVisible(true);
+                GraphicsContext context = FigureDisplay.getGraphicsContext2D();
+                String colorValueString = Base64.getEncoder().encodeToString(signedHash).substring(0,3);
+                StringBuffer sb = new StringBuffer();
+                char ch[] =  colorValueString.toCharArray();
+                for (char c : ch) {
+                    sb.append(Integer.toHexString(c));
+                }
+                context.setFill(Color.web(sb.toString()));
+                context.fillRect(20,20,180,180);
             } else {
                 //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
             }
@@ -80,6 +103,11 @@ public class RegisterVisitController {
     }
     @FXML
     public void initialize(){
+        qrDataStringField.setVisible(true);
+        SubmitButtonDataString.setVisible(true);
+        leaveCFButton.setVisible(false);
+        FigureDisplay.setVisible(false);
+        medicButton.setVisible(false);
         try {
             Registry mixingProxyRegistery = LocateRegistry.getRegistry("localhost",4002);
             mixingProxyImpl = (MixingProxyInterface) mixingProxyRegistery.lookup("MixingProxyService");
