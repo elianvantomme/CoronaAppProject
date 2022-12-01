@@ -1,5 +1,17 @@
 package clients.doctor;
 
+import clients.visitor.LogEntry;
+import services.matching_service.MatchingServiceInterface;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
+import java.security.SignedObject;
+import java.util.ArrayList;
+import java.util.List;
+
 public class DoctorClient {
 
     private Signature signature;

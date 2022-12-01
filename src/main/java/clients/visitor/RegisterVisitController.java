@@ -28,7 +28,16 @@ import java.util.*;
 
 public class RegisterVisitController {
     //TODO gaan verwijderen van de visistedCFs na een bepaald aantal dagen
-    Map<LocalDateTime, String[]> visitedCFs = new HashMap<>();
+//    Map<LocalDateTime, String[]> visitedCFs = new HashMap<>();
+    private ArrayList<String[]> visitedCFs;
+    private ArrayList<Capsule> capsules;
+    private DoctorClient doctor;
+    private MixingProxyInterface mixingProxyImpl;
+    private List<SignedObject> validTokens;
+    private List<SignedObject> usedTokens;
+    private byte[] signedHash;
+    private List<LogEntry> logs;
+
     @FXML
     private TextField qrDataStringField;
     @FXML
@@ -99,7 +108,20 @@ public class RegisterVisitController {
                 //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
             }
         }
+    }
+    @FXML
+    public void leaveCateringFacility(){
+        qrDataStringField.setVisible(true);
+        SubmitButtonDataString.setVisible(true);
+        medicButton.setVisible(true);
+        leaveCFButton.setVisible(false);
+        FigureDisplay.setVisible(false);
+        LocalDateTime leaveTime = LocalDateTime.now();
+//      String[] temp =visitedCFs.get(visitedCFs.size()-1);
+//      temp[1] = leaveTime.toString();
 
+        LogEntry log = logs.get(logs.size()-1);
+        log.setLeaveTime(LocalDateTime.now());
     }
     @FXML
     public void initialize(){
