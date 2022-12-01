@@ -1,13 +1,18 @@
 package services.mixing_proxy;
 
 import clients.visitor.Capsule;
+import services.matching_service.MatchingServiceInterface;
 import services.registrar.Token;
 
 import java.io.IOException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements MixingProxyInterface{
@@ -15,13 +20,17 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     private List<Token> usedTokens;
     private KeyPair mixingProxyKeyPair;
     private PublicKey registrarPublicKey;
-    Signature sig;
+    private Signature sig;
+    private List<Capsule> capsuleList;
+    private MatchingServiceInterface matchingServiceImpl;
 
     public MixingProxyInterfaceImpl() throws Exception {
         usedTokens = new ArrayList<>();
         mixingProxyKeyPair = generateKeyPair();
         sig = Signature.getInstance("SHA256withRSA");
         sig.initSign(mixingProxyKeyPair.getPrivate());
+        Registry matchingServiceRegistry = LocateRegistry.getRegistry("localhost",4001);
+        matchingServiceImpl = (MatchingServiceInterface) matchingServiceRegistry.lookup("MatchingService");
     }
 
     public KeyPair generateKeyPair() throws Exception{
@@ -47,20 +56,19 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
                     System.out.println("capsule.getHashRandomNym() = " + Arrays.toString(capsule.getHashRandomNym()));
                     sig.update(capsule.getHashRandomNym());
                     byte[] signedHash = sig.sign();
+                    usedTokens.add(token);
+                    capsuleList.add(capsule);
                     return signedHash;
                 }
             }
         }
         return null;
-
-        //        Signature signature = Signature.getInstance("SHA256withRSA");
-//        signature.initVerify(registrarPublicKey);
-//        signature.update(capsule.getUserToken().getBytes());
-//        if (!signature.verify(signature)))){
-//            return "FALSE KEY";
-//        }
-//        return "OK";
     }
 
+    public void flushCapsules() throws Exception{
+        Collections.shuffle(capsuleList);
+        matchingServiceImpl.receiveCapsules(capsuleList);
+        capsuleList.clear();
+    }
 
 }

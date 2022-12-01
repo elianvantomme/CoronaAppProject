@@ -1,5 +1,6 @@
 package clients.visitor;
 
+import clients.doctor.DoctorClient;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -61,6 +62,9 @@ public class RegisterVisitController {
     public void setValidTokens(List<SignedObject> validTokens) {
         this.validTokens = validTokens;
     }
+
+
+
     @FXML
     private void onClickSubmitDataString() throws Exception {
         LocalDateTime dateTime = LocalDateTime.now();
@@ -87,6 +91,9 @@ public class RegisterVisitController {
                     signedToken,
                     pseudonymHash.getBytes()
             );
+            capsules.add(capsule);
+
+            logs.add(new LogEntry((Token) signedToken.getObject(), Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
             signedHash = mixingProxyImpl.registerVisit(capsule);
             System.out.println(Base64.getEncoder().encodeToString(signedHash));
             if(signedHash != null){
