@@ -1,6 +1,8 @@
 package services.registrar;
 
 import clients.barowner.CateringFacility;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 
 import java.rmi.Remote;
 import java.security.SignedObject;

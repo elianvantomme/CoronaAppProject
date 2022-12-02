@@ -21,8 +21,15 @@ public class CateringFacility implements Serializable {
         return "CateringFacility{" +
                 "businessNumber='" + businessNumber + '\'' +
                 ", name='" + name + '\'' +
-                ", adress='" + address + '\'' +
+                ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    public String printCateringFacility() {
+        return name+'\n'+
+                "adress='" + address + '\'' +'\n'+
+                "businessNumber='" + businessNumber + '\'' +'\n' +
+                "phoneNumber='" + phoneNumber + '\'';
     }
 }

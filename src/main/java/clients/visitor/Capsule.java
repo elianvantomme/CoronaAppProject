@@ -3,6 +3,7 @@ package clients.visitor;
 import java.io.Serializable;
 import java.security.SignedObject;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class Capsule implements Serializable {
     private LocalDateTime startInterval;
@@ -31,5 +32,14 @@ public class Capsule implements Serializable {
 
     public byte[] getHashRandomNym() {
         return hashRandomNym;
+    }
+
+    @Override
+    public String toString() {
+        return "Capsule:"+ "\n"+
+                "startInterval=" + startInterval + "\n"+
+                ", endInterval=" + endInterval + "\n"+
+                ", signedUserToken=" + signedUserToken + "\n"+
+                ", hashRandomNym=" + Arrays.toString(hashRandomNym) + "\n";
     }
 }

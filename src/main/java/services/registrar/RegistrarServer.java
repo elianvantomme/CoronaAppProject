@@ -1,14 +1,25 @@
 package services.registrar;
 
-import services.mixing_proxy.MixingProxyInterfaceImpl;
-import services.mixing_proxy.MixingProxyServer;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.NoSuchAlgorithmException;
 
-public class RegistrarServer {
+public class RegistrarServer extends Application {
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(RegistrarServer.class.getResource("registrarInterface-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        stage.setTitle("Registrar Interface");
+        stage.setScene(scene);
+        stage.show();
+    }
 
     public void startServer(RegistrarInterfaceImpl registrarInterface){
         try {
@@ -24,6 +35,6 @@ public class RegistrarServer {
         RegistrarServer registrarServer = new RegistrarServer();
         RegistrarInterfaceImpl registrarInterface = new RegistrarInterfaceImpl();
         registrarServer.startServer(registrarInterface);
-
+        launch();
     }
 }

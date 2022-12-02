@@ -1,12 +1,22 @@
 package services.registrar;
 
 import clients.barowner.CateringFacility;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
 import services.mixing_proxy.MixingProxyInterface;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,7 +26,8 @@ import java.security.spec.KeySpec;
 import java.time.LocalDate;
 import java.util.*;
 
-public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
+public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface, Serializable {
+    /**********NORMAL VARIABLES*********/
     private KeyGenerator keyGenerator;
     private SecretKey masterSecretKey;
     private Set<String> registeredPhoneNumbers;
@@ -24,8 +35,15 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private Map<String, List<Token>> validTokensMap;
     private MixingProxyInterface mixingProxyInterface;
     private KeyPair tokensKeyPair;
-    private List<String> visitorList;
-    private List<CateringFacility> cateringFacilityList;
+    static private RegistrarContent registrarContent;
+
+    /**********FXML VARIABLES*********/
+    @FXML
+    private TextArea visitorTextArea;
+    @FXML
+    private TextArea cateringFacilityTextArea;
+    @FXML
+    private Button refreshButton;
 
     public RegistrarInterfaceImpl () throws Exception {
          keyGenerator = KeyGenerator.getInstance("AES");
@@ -37,8 +55,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
                  getRegistry("localhost", 4002).
                  lookup("MixingProxyService");
         tokensKeyPair = generateKeyPairForSigningTokens();
-        visitorList = new ArrayList<>();
-        cateringFacilityList = new ArrayList<>();
+        registrarContent = new RegistrarContent();
     }
 
     public KeyPair generateKeyPairForSigningTokens() throws Exception{
@@ -53,13 +70,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     public String loginCF(CateringFacility cateringFacility) throws NoSuchAlgorithmException, InvalidKeySpecException {
         LocalDate localDate = LocalDate.now();
 
-        //Check if the CF already is registered
-//        if (!secretKeyMap.containsKey(phoneNumber)){
-//            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-//            SecretKey masterSecretKey = keyGenerator.generateKey();
-//            secretKeyMap.put(phoneNumber, masterSecretKey);
-//        }
-
         //Generate the Daily Secret key from: master secret key, CF info, day
         String KDFinput = cateringFacility.toString() + masterSecretKey.toString() + localDate;
         SecretKeyFactory kf = SecretKeyFactory.getInstance("DESede");
@@ -68,14 +78,14 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
-        cateringFacilityList.add(cateringFacility);
+        registrarContent.addCateringFacility(cateringFacility);
         return Base64.getEncoder().encodeToString(md.digest(byteArray));
     }
 
     @Override
     public List<SignedObject> loginVisitor(String phoneNumber) throws Exception {
-        if(!registeredPhoneNumbers.add(phoneNumber)){ // only add new users
-            visitorList.add(phoneNumber);
+        if(registeredPhoneNumbers.add(phoneNumber)){ // only add new users
+            registrarContent.addVisitor(phoneNumber);
         }
         return generateNewTokens(phoneNumber);
     }
@@ -105,7 +115,12 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         validTokensMap.put(phoneNumber,newUserTokens);
         return newUserSignedTokens;
     }
-
-
-
+    @FXML
+    public void refreshScreen(){
+        showOutput();
+    }
+    public void showOutput(){
+        visitorTextArea.setText(registrarContent.printVisitorList());
+        cateringFacilityTextArea.setText(registrarContent.printCateringFacilityList());
+    }
 }
