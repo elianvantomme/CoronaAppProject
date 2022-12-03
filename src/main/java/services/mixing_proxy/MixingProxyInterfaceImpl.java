@@ -22,7 +22,6 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     /**********NORMAL VARIABLES*********/
     private List<Token> usedTokens;
     private KeyPair mixingProxyKeyPair;
-    private PublicKey registrarPublicKey;
     private Signature sig;
     static private MixingProxyContent mixingProxyContent;
     private MatchingServiceInterface matchingServiceImpl;
@@ -53,7 +52,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
 
     @Override
     public void setRegistrarPublicKey(PublicKey publicKey) {
-        registrarPublicKey = publicKey;
+        mixingProxyContent.setRegistrarPublicKey(publicKey);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
         SignedObject signedToken = capsule.getSignedUserToken();
         Token token = (Token) signedToken.getObject();
         System.out.println("token = " + token);
-        if(signedToken.verify(registrarPublicKey, signature)){
+        if(signedToken.verify(mixingProxyContent.getRegistrarPublicKey(), signature)){
             if(!usedTokens.contains(token)){
                 if(token.getLocalDate().isEqual(LocalDate.now())){
                     System.out.println("capsule.getHashRandomNym() = " + Arrays.toString(capsule.getHashRandomNym()));

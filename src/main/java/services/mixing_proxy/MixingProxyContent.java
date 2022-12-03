@@ -2,11 +2,13 @@ package services.mixing_proxy;
 
 import clients.visitor.Capsule;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MixingProxyContent {
     static private List<Capsule> capsuleList;
+    static private PublicKey registrarPublicKey;
 
     public MixingProxyContent(){
         capsuleList = new ArrayList<>();
@@ -17,6 +19,14 @@ public class MixingProxyContent {
     }
     public List<Capsule> getCapsuleList() {
         return capsuleList;
+    }
+
+    public void setRegistrarPublicKey(PublicKey registrarPublicKey) {
+        MixingProxyContent.registrarPublicKey = registrarPublicKey;
+    }
+
+    public PublicKey getRegistrarPublicKey() {
+        return registrarPublicKey;
     }
 
     public String printContent() {
