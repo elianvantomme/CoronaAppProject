@@ -26,13 +26,11 @@ import java.security.spec.KeySpec;
 import java.time.LocalDate;
 import java.util.*;
 
-public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface, Serializable {
+public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
     /**********NORMAL VARIABLES*********/
     private KeyGenerator keyGenerator;
     private SecretKey masterSecretKey;
     private Set<String> registeredPhoneNumbers;
-    private Map<String, List<Token>> oldTokensMap;
-    private Map<String, List<Token>> validTokensMap;
     private MixingProxyInterface mixingProxyInterface;
     private KeyPair tokensKeyPair;
     static private RegistrarContent registrarContent;
@@ -46,12 +44,11 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private Button refreshButton;
 
     public RegistrarInterfaceImpl () throws Exception {
-         keyGenerator = KeyGenerator.getInstance("AES");
-         masterSecretKey = keyGenerator.generateKey();
-         registeredPhoneNumbers = new HashSet<>();
-         oldTokensMap = new HashMap<>();
-         validTokensMap = new HashMap<>();
-         mixingProxyInterface = (MixingProxyInterface) LocateRegistry.
+        keyGenerator = KeyGenerator.getInstance("AES");
+        masterSecretKey = keyGenerator.generateKey();
+        registeredPhoneNumbers = new HashSet<>();
+
+        mixingProxyInterface = (MixingProxyInterface) LocateRegistry.
                  getRegistry("localhost", 4002).
                  lookup("MixingProxyService");
         tokensKeyPair = generateKeyPairForSigningTokens();
@@ -94,9 +91,9 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         LocalDate date = LocalDate.now();
         List<Token> newUserTokens = new ArrayList<>();
         List<SignedObject> newUserSignedTokens = new ArrayList<>();
-
+        Map<String, List<Token>> oldTokensMap = registrarContent.getOldTokensMap();
         if(oldTokensMap.containsKey(phoneNumber)){
-            oldTokensMap.get(phoneNumber).addAll(validTokensMap.get(phoneNumber));
+            oldTokensMap.get(phoneNumber).addAll(registrarContent.getValidTokens(phoneNumber));
         }
 
         Signature signature = Signature.getInstance("SHA256withRSA");
@@ -112,14 +109,11 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
             newUserSignedTokens.add(signedToken);
             newUserTokens.add(token);
         }
-        validTokensMap.put(phoneNumber,newUserTokens);
+        registrarContent.addValidTokens(phoneNumber,newUserTokens);
         return newUserSignedTokens;
     }
     @FXML
     public void refreshScreen(){
-        showOutput();
-    }
-    public void showOutput(){
         visitorTextArea.setText(registrarContent.printVisitorList());
         cateringFacilityTextArea.setText(registrarContent.printCateringFacilityList());
     }

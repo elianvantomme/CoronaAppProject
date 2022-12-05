@@ -24,5 +24,6 @@
          </font>
       </Text>
       <Button fx:id="medicButton" layoutX="562.0" layoutY="14.0" mnemonicParsing="false" onAction="#submitLogsDoc" prefHeight="31.0" prefWidth="76.0" text="MEDIC!" />
+      <Button layoutX="565.0" layoutY="68.0" mnemonicParsing="false" onAction="#fetchInfectedCapsules" prefHeight="25.0" prefWidth="61.0" text="Button" />
    </children>
 </AnchorPane>

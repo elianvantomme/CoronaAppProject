@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="services.matching_service.MatchingServiceInterfaceImp">
+   <children>
+      <Text layoutX="185.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Matching Service Interface">
+         <font>
+            <Font name="Comic Sans MS" size="19.0" />
+         </font>
+      </Text>
+      <Button fx:id="refreshButton" layoutX="272.0" layoutY="54.0" mnemonicParsing="false" onAction="#refreshScreen" text="Refresh" />
+      <HBox layoutX="9.0" layoutY="100.0" prefHeight="286.0" prefWidth="600.0">
+         <children>
+            <TextArea fx:id="receivedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="150.0" />
+            <TextArea fx:id="uninformedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="150.0" />
+            <TextArea fx:id="informedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="150.0" />
+            <TextArea editable="false" prefHeight="286.0" prefWidth="150.0" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

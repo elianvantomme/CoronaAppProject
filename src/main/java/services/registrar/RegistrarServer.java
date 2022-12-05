@@ -10,16 +10,16 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class RegistrarServer extends Application {
+public class RegistrarServer {
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(RegistrarServer.class.getResource("registrarInterface-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle("Registrar Interface");
-        stage.setScene(scene);
-        stage.show();
-    }
+//    @Override
+//    public void start(Stage stage) throws IOException {
+//        FXMLLoader fxmlLoader = new FXMLLoader(RegistrarServer.class.getResource("registrarInterface-view.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+//        stage.setTitle("Registrar Interface");
+//        stage.setScene(scene);
+//        stage.show();
+//    }
 
     public void startServer(RegistrarInterfaceImpl registrarInterface){
         try {
@@ -35,6 +35,6 @@ public class RegistrarServer extends Application {
         RegistrarServer registrarServer = new RegistrarServer();
         RegistrarInterfaceImpl registrarInterface = new RegistrarInterfaceImpl();
         registrarServer.startServer(registrarInterface);
-        launch();
+//        launch();
     }
 }

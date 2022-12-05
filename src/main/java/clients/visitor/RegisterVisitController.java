@@ -11,7 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import services.matching_service.MatchingServiceInterfaceImp;
 import services.mixing_proxy.MixingProxyInterface;
+import services.registrar.RegistrarContent;
 import services.registrar.RegistrarInterface;
 import services.registrar.RegistrarInterfaceImpl;
 import services.registrar.Token;
@@ -34,6 +36,7 @@ public class RegisterVisitController {
     private ArrayList<Capsule> capsules;
     private DoctorClient doctor;
     private MixingProxyInterface mixingProxyImpl;
+    private MatchingServiceInterfaceImp matchingServiceImpl;
     private List<SignedObject> validTokens;
     private List<SignedObject> usedTokens;
     private byte[] signedHash;
@@ -64,7 +67,6 @@ public class RegisterVisitController {
     }
 
 
-
     @FXML
     private void onClickSubmitDataString() throws Exception {
         LocalDateTime dateTime = LocalDateTime.now();
@@ -92,7 +94,7 @@ public class RegisterVisitController {
                     pseudonymHash.getBytes()
             );
             capsules.add(capsule);
-
+            System.out.println(capsule);
             logs.add(new LogEntry((Token) signedToken.getObject(), Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
             signedHash = mixingProxyImpl.registerVisit(capsule);
             System.out.println(Base64.getEncoder().encodeToString(signedHash));
@@ -129,10 +131,17 @@ public class RegisterVisitController {
 
         LogEntry log = logs.get(logs.size()-1);
         log.setLeaveTime(LocalDateTime.now());
+        qrDataStringField.clear();
     }
+
     @FXML
     public void submitLogsDoc(){
 
+    }
+
+    @FXML
+    public void fetchInfectedCapsules() throws Exception{
+        List<Capsule> infectedCapsuleList = matchingServiceImpl.getInfectedCapsules();
     }
     @FXML
     public void initialize(){
@@ -144,6 +153,9 @@ public class RegisterVisitController {
         try {
             Registry mixingProxyRegistery = LocateRegistry.getRegistry("localhost",4002);
             mixingProxyImpl = (MixingProxyInterface) mixingProxyRegistery.lookup("MixingProxyService");
+
+            Registry matchingServiceRegistry = LocateRegistry.getRegistry("localhost", 4001);
+            matchingServiceImpl = (MatchingServiceInterfaceImp) matchingServiceRegistry.lookup("MatchingService");
         }catch (Exception e){
             e.printStackTrace();
         }

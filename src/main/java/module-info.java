@@ -12,4 +12,5 @@ module visitor.clients {
     opens clients.visitor;
     opens services.registrar;
     opens services.mixing_proxy;
+    opens services.matching_service;
 }

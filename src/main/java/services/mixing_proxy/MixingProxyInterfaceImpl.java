@@ -56,7 +56,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     }
 
     @Override
-    public byte[] registerVisit(Capsule capsule) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, ClassNotFoundException {
+    public byte[] registerVisit(Capsule capsule) throws Exception {
         Signature signature = Signature.getInstance("SHA256withRSA");
         SignedObject signedToken = capsule.getSignedUserToken();
         Token token = (Token) signedToken.getObject();
@@ -75,6 +75,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
         }
         return null;
     }
+
     @FXML
     public void refreshScreen(){
         mixingProxyQueue.setText(mixingProxyContent.printContent());

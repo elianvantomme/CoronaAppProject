@@ -13,5 +13,6 @@ public interface MatchingServiceInterface extends Remote {
     void receiveCapsules(List<Capsule> capsuleList) throws Exception;
     void receiveLogs(SignedObject signedObject) throws Exception;
     void addDoctorPublicKey(PublicKey publicKey) throws Exception;
+    List<Capsule> getInfectedCapsules() throws Exception;
 
 }

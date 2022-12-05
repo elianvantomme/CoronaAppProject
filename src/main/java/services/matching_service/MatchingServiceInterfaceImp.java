@@ -2,42 +2,49 @@ package services.matching_service;
 
 import clients.visitor.Capsule;
 import clients.visitor.LogEntry;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignedObject;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements MatchingServiceInterface{
 
-    private List<Capsule> capsuleList;
-    private List<Capsule> uninformdInfectedCapsules;
-    private List<Capsule> informdInfectedCapsules;
-    private List<PublicKey> doctorPublicKeys;
+    private MatchingServiceContent matchingServiceContent;
+
+    @FXML
+    private TextArea receivedCapsulesTextArea;
+    @FXML
+    private TextArea uninformedCapsulesTextArea;
+    @FXML
+    private TextArea informedCapsulesTextArea;
 
     public MatchingServiceInterfaceImp() throws Exception{
-        capsuleList = new ArrayList<>();
-        uninformdInfectedCapsules = new ArrayList<>();
-        informdInfectedCapsules = new ArrayList<>();
-        doctorPublicKeys = new ArrayList<>();
+        matchingServiceContent = new MatchingServiceContent();
     }
 
     @Override
     public void addDoctorPublicKey(PublicKey publicKey) throws Exception {
-        doctorPublicKeys.add(publicKey);
+        matchingServiceContent.addDoctorKey(publicKey);
+    }
+
+    @Override
+    public List<Capsule> getInfectedCapsules() throws Exception {
+        return matchingServiceContent.getUninformdInfectedCapsules();
     }
 
     @Override
     public void receiveCapsules(List<Capsule> capsuleList) throws Exception {
-        capsuleList.addAll(capsuleList);
+        matchingServiceContent.addCapsulesToList(capsuleList);
     }
 
     public boolean checkSignature(SignedObject signedObject) throws Exception{
         Signature signature = Signature.getInstance("RSA");
-        for(PublicKey publicKey : doctorPublicKeys){
+        for(PublicKey publicKey : matchingServiceContent.getDoctorPublicKeys()){
             if(signedObject.verify(publicKey, signature)){
                 return true;
             }
@@ -56,10 +63,10 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
 
         List<LogEntry> infectedLogs = (List<LogEntry>) signedObject.getObject();
         for(LogEntry log : infectedLogs){
-            for (Capsule capsule : capsuleList) {
+            for (Capsule capsule : matchingServiceContent.getCapsuleList()) {
                 if (log.getHash() == capsule.getHashRandomNym()){
                     if (containsTimeInterval(log.getEntryTime(),log.getLeaveTime(),log.getEntryTime(), log.getLeaveTime())){
-                        uninformdInfectedCapsules.add(capsule);
+                        matchingServiceContent.addUniformedCapsule(capsule);
                     }
                 }
             }
@@ -73,4 +80,11 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
         }
         return false;
     }
+    @FXML
+    public void refreshScreen(){
+        receivedCapsulesTextArea.setText(matchingServiceContent.printCapsuleList());
+        uninformedCapsulesTextArea.setText(matchingServiceContent.printUninformedCapsuleList());
+        informedCapsulesTextArea.setText(matchingServiceContent.printInformedCapsuleList());
+    }
+
 }
