@@ -161,4 +161,22 @@ public class RegisterVisitController {
             e.printStackTrace();
         }
     }
+
+
+
+    @FXML
+    public void checkIfInfectedCapsules() throws Exception {
+
+        ArrayList<Capsule> infectedCapsules= new ArrayList<>();  //matchingServiceImpl.getInfectedCapsules();
+        ArrayList<SignedObject> infectedSigndUsertokens= new ArrayList<>();
+
+        for( Capsule infectedCap : infectedCapsules){
+            for(Capsule cap : capsules){
+                if(infectedCap.equals(cap)){
+                    infectedSigndUsertokens.add(cap.getSignedUserToken());
+                }
+            }
+        }
+        //TODO return list to matching server
+    }
 }
