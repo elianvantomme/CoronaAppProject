@@ -37,6 +37,19 @@ public class Capsule implements Serializable {
         return hashRandomNym;
     }
 
+    public boolean compareTo(Capsule capsule) throws Exception{
+        if(!this.startInterval.equals(capsule.getStartInterval())) return false;
+        if(!this.endInterval.equals(capsule.getEndInterval())) return false;
+
+        Token token1 = (Token) this.signedUserToken.getObject();
+        Token token2 = (Token) capsule.getSignedUserToken().getObject();
+
+        if(!token1.equals(token2)) return false;
+        if(!Arrays.equals(this.hashRandomNym, capsule.getHashRandomNym())) return false;
+
+        return true;
+    }
+
     @Override
     public String toString() {
         Token token = null;
