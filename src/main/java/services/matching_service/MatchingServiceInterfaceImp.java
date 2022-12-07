@@ -4,12 +4,15 @@ import clients.visitor.Capsule;
 import clients.visitor.LogEntry;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
+import services.registrar.Token;
 
+import java.io.IOException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignedObject;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements MatchingServiceInterface{
@@ -42,8 +45,23 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
         matchingServiceContent.addCapsulesToList(capsuleList);
     }
 
+    @Override
+    public void receiveInfectedSignedUsertokens(List<SignedObject> infectedSignedUsertokens) throws IOException, ClassNotFoundException {
+        List<Capsule> uninformedCapsules = matchingServiceContent.getUninformdInfectedCapsules();
+        for (int i = 0; i < uninformedCapsules.size(); i++) {
+            Capsule uninformedCapsule = uninformedCapsules.get(i);
+            Token uniformedToken = (Token) uninformedCapsule.getSignedUserToken().getObject();
+            for (SignedObject signedObject: infectedSignedUsertokens) {
+                Token infectedToken = (Token) signedObject.getObject();
+                if (uniformedToken.equals(infectedToken)){
+                    matchingServiceContent.addInformedCapsule(uninformedCapsule);
+                    matchingServiceContent.removeUniformedCapsule(uninformedCapsule);
+                }
+            }
+        }
+    }
     public boolean checkSignature(SignedObject signedObject) throws Exception{
-        Signature signature = Signature.getInstance("RSA");
+        Signature signature = Signature.getInstance("SHA256withRSA");
         for(PublicKey publicKey : matchingServiceContent.getDoctorPublicKeys()){
             if(signedObject.verify(publicKey, signature)){
                 return true;
@@ -60,18 +78,20 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
             //TODO doe iets als het geen geldige signature is, maar dit zou nooit mogen gebeuren.
         }
 
-
         List<LogEntry> infectedLogs = (List<LogEntry>) signedObject.getObject();
         for(LogEntry log : infectedLogs){
-            for (Capsule capsule : matchingServiceContent.getCapsuleList()) {
-                if (log.getHash() == capsule.getHashRandomNym()){
-                    if (containsTimeInterval(log.getEntryTime(),log.getLeaveTime(),log.getEntryTime(), log.getLeaveTime())){
+            for (int i = 0; i < matchingServiceContent.getCapsuleList().size(); i++  ) {
+                Capsule capsule = matchingServiceContent.getCapsuleList().get(i);
+                if (Arrays.equals(log.getHash(), capsule.getHashRandomNym())){
+                    if (containsTimeInterval(log.getEntryTime(),log.getLeaveTime(),capsule.getStartInterval(), capsule.getEndInterval())){
                         matchingServiceContent.addUniformedCapsule(capsule);
+                        matchingServiceContent.removeNormalCapsule(capsule);
                     }
                 }
             }
         }
     }
+
     public boolean containsTimeInterval(LocalDateTime logStartDate, LocalDateTime logEndDate, LocalDateTime capStartDate, LocalDateTime capEndDate){
         for (LocalDateTime dateTime = capStartDate; dateTime.isBefore(capEndDate); dateTime = dateTime.plusMinutes(1)) {
             if (dateTime.isAfter(logStartDate) && dateTime.isBefore(logEndDate)){

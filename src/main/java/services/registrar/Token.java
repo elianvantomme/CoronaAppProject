@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 public class Token implements Serializable {
     private double random;
@@ -26,4 +27,16 @@ public class Token implements Serializable {
         return localDate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return Double.compare(token.random, random) == 0 && Objects.equals(localDate, token.localDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(random, localDate);
+    }
 }

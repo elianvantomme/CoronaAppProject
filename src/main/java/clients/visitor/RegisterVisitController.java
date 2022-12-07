@@ -41,7 +41,7 @@ public class RegisterVisitController {
     private List<SignedObject> validTokens;
     private List<SignedObject> usedTokens;
     private byte[] signedHash;
-    private List<LogEntry> logs;
+    private ArrayList<LogEntry> logs;
 
     @FXML
     private TextField qrDataStringField;
@@ -136,13 +136,25 @@ public class RegisterVisitController {
     }
 
     @FXML
-    public void submitLogsDoc(){
-
+    public void submitLogsDoc() throws Exception {
+        doctor.sendInfectedData(logs);
     }
 
     @FXML
-    public void fetchInfectedCapsules() throws Exception{
-        List<Capsule> infectedCapsuleList = matchingServiceImpl.getInfectedCapsules();
+    public void fetchInfectedCapsules() throws Exception {
+
+        List<Capsule> infectedCapsules= matchingServiceImpl.getInfectedCapsules();  //matchingServiceImpl.getInfectedCapsules();
+        List<SignedObject> infectedSignedUsertokens= new ArrayList<>();
+
+        for(Capsule infectedCap : infectedCapsules){
+            for(Capsule cap : capsules){
+                if(infectedCap.compareTo(cap)){
+                    infectedSignedUsertokens.add(cap.getSignedUserToken());
+                }
+            }
+        }
+        //TODO return list to matching server
+        matchingServiceImpl.receiveInfectedSignedUsertokens(infectedSignedUsertokens);
     }
     @FXML
     public void initialize(){
@@ -162,21 +174,4 @@ public class RegisterVisitController {
         }
     }
 
-
-
-    @FXML
-    public void checkIfInfectedCapsules() throws Exception {
-
-        ArrayList<Capsule> infectedCapsules= new ArrayList<>();  //matchingServiceImpl.getInfectedCapsules();
-        ArrayList<SignedObject> infectedSigndUsertokens= new ArrayList<>();
-
-        for( Capsule infectedCap : infectedCapsules){
-            for(Capsule cap : capsules){
-                if(infectedCap.equals(cap)){
-                    infectedSigndUsertokens.add(cap.getSignedUserToken());
-                }
-            }
-        }
-        //TODO return list to matching server
-    }
 }

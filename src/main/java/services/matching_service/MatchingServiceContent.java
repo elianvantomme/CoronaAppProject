@@ -47,6 +47,10 @@ public class MatchingServiceContent {
         uninformdInfectedCapsules.add(capsule);
     }
 
+    public void removeNormalCapsule(Capsule capsule){
+        capsuleList.remove(capsule);
+    }
+
     public String printCapsuleList(){
         StringBuilder sb = new StringBuilder();
         for (Capsule capsule : capsuleList) {
@@ -69,5 +73,13 @@ public class MatchingServiceContent {
             sb.append(capsule);
         }
         return sb.toString();
+    }
+
+    public void addInformedCapsule(Capsule uninformedCapsule) {
+        informdInfectedCapsules.add(uninformedCapsule);
+    }
+
+    public void removeUniformedCapsule(Capsule uninformedCapsule) {
+        uninformdInfectedCapsules.remove(uninformedCapsule);
     }
 }

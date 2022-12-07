@@ -1,5 +1,8 @@
 package clients.visitor;
 
+import services.registrar.Token;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.SignedObject;
 import java.time.LocalDateTime;
@@ -36,10 +39,16 @@ public class Capsule implements Serializable {
 
     @Override
     public String toString() {
-        return "Capsule:"+ "\n"+
+        Token token = null;
+        try {
+            token = (Token) signedUserToken.getObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+            return "Capsule:"+ "\n"+
                 "startInterval=" + startInterval + "\n"+
                 ", endInterval=" + endInterval + "\n"+
-                ", signedUserToken=" + signedUserToken + "\n"+
+                ", signedUserToken=" + token.toString()+ "\n"+
                 ", hashRandomNym=" + Arrays.toString(hashRandomNym) + "\n";
     }
 }
