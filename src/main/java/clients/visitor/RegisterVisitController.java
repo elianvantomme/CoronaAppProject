@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import services.matching_service.MatchingServiceInterface;
 import services.matching_service.MatchingServiceInterfaceImp;
 import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarContent;
@@ -36,7 +37,7 @@ public class RegisterVisitController {
     private ArrayList<Capsule> capsules;
     private DoctorClient doctor;
     private MixingProxyInterface mixingProxyImpl;
-    private MatchingServiceInterfaceImp matchingServiceImpl;
+    private MatchingServiceInterface matchingServiceImpl;
     private List<SignedObject> validTokens;
     private List<SignedObject> usedTokens;
     private byte[] signedHash;
@@ -155,7 +156,7 @@ public class RegisterVisitController {
             mixingProxyImpl = (MixingProxyInterface) mixingProxyRegistery.lookup("MixingProxyService");
 
             Registry matchingServiceRegistry = LocateRegistry.getRegistry("localhost", 4001);
-            matchingServiceImpl = (MatchingServiceInterfaceImp) matchingServiceRegistry.lookup("MatchingService");
+            matchingServiceImpl = (MatchingServiceInterface) matchingServiceRegistry.lookup("MatchingService");
         }catch (Exception e){
             e.printStackTrace();
         }
