@@ -11,9 +11,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignedObject;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements MatchingServiceInterface{
 
@@ -80,15 +81,18 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
 
         List<LogEntry> infectedLogs = (List<LogEntry>) signedObject.getObject();
         for(LogEntry log : infectedLogs){
-            for (int i = 0; i < matchingServiceContent.getCapsuleList().size(); i++  ) {
-                Capsule capsule = matchingServiceContent.getCapsuleList().get(i);
+            List<Capsule> tempList = matchingServiceContent.getCapsuleList();
+            Iterator<Capsule> i = tempList.iterator();
+            while(i.hasNext()){
+                Capsule capsule = i.next();
                 if (Arrays.equals(log.getHash(), capsule.getHashRandomNym())){
                     if (containsTimeInterval(log.getEntryTime(),log.getLeaveTime(),capsule.getStartInterval(), capsule.getEndInterval())){
                         matchingServiceContent.addUniformedCapsule(capsule);
-                        matchingServiceContent.removeNormalCapsule(capsule);
+                        i.remove();
                     }
                 }
             }
+            matchingServiceContent.setCapsuleList(tempList);
         }
     }
 
@@ -105,6 +109,21 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
         receivedCapsulesTextArea.setText(matchingServiceContent.printCapsuleList());
         uninformedCapsulesTextArea.setText(matchingServiceContent.printUninformedCapsuleList());
         informedCapsulesTextArea.setText(matchingServiceContent.printInformedCapsuleList());
+    }
+    @FXML
+    public void initialize(){
+        Timer timer = new Timer();
+        TimerTask refreshTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    refreshScreen();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(refreshTask, Date.from(Instant.now()), Duration.ofSeconds(3).toMillis());
     }
 
 }

@@ -12,4 +12,5 @@ public interface RegistrarInterface extends Remote{
 //    String loginCF(int phoneNumber) throws Exception;
     String loginCF(CateringFacility cateringFacility) throws Exception;
     List<SignedObject> loginVisitor(String phoneNumber) throws Exception;
+    List<SignedObject> generateNewTokens(String phoneNumber) throws Exception;
 }

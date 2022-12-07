@@ -31,7 +31,7 @@ public class VisitorController {
     public void onClickSubmitPhoneNumber() throws Exception {
         if (!visitorPhoneNumberField.getText().equals("")){
             validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
-            System.out.println("validTokens = " + validTokens);
+            System.out.println("validTokens = ");
             for(SignedObject signedObject : validTokens){
                 System.out.println(signedObject.getObject());
             }

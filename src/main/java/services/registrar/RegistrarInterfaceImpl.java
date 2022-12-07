@@ -35,14 +35,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private KeyPair tokensKeyPair;
     static private RegistrarContent registrarContent;
 
-    /**********FXML VARIABLES*********/
-    @FXML
-    private TextArea visitorTextArea;
-    @FXML
-    private TextArea cateringFacilityTextArea;
-    @FXML
-    private Button refreshButton;
-
     public RegistrarInterfaceImpl () throws Exception {
         keyGenerator = KeyGenerator.getInstance("AES");
         masterSecretKey = keyGenerator.generateKey();
@@ -76,6 +68,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
         registrarContent.addCateringFacility(cateringFacility);
+        refreshScreen();
         return Base64.getEncoder().encodeToString(md.digest(byteArray));
     }
 
@@ -84,9 +77,11 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         if(registeredPhoneNumbers.add(phoneNumber)){ // only add new users
             registrarContent.addVisitor(phoneNumber);
         }
+        refreshScreen();
         return generateNewTokens(phoneNumber);
     }
 
+    @Override
     public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
         LocalDate date = LocalDate.now();
         List<Token> newUserTokens = new ArrayList<>();
@@ -112,9 +107,8 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         registrarContent.addValidTokens(phoneNumber,newUserTokens);
         return newUserSignedTokens;
     }
-    @FXML
     public void refreshScreen(){
-        visitorTextArea.setText(registrarContent.printVisitorList());
-        cateringFacilityTextArea.setText(registrarContent.printCateringFacilityList());
+        System.out.println(registrarContent.printVisitorList());
+        System.out.println(registrarContent.printCateringFacilityList());
     }
 }

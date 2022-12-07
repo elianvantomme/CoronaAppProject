@@ -82,4 +82,8 @@ public class MatchingServiceContent {
     public void removeUniformedCapsule(Capsule uninformedCapsule) {
         uninformdInfectedCapsules.remove(uninformedCapsule);
     }
+
+    public void setCapsuleList(List<Capsule> tempList) {
+        capsuleList = tempList;
+    }
 }

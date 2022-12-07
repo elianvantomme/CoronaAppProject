@@ -50,8 +50,6 @@ public class Capsule implements Serializable {
         return true;
     }
 
-
-
     @Override
     public String toString() {
         Token token = null;

@@ -12,11 +12,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements MixingProxyInterface{
     /**********NORMAL VARIABLES*********/
@@ -31,8 +31,6 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     private TextArea mixingProxyQueue;
     @FXML
     private Button flushButton;
-    @FXML
-    private Button refreshButton;
 
     public MixingProxyInterfaceImpl() throws Exception {
         usedTokens = new ArrayList<>();
@@ -76,7 +74,6 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
         return null;
     }
 
-    @FXML
     public void refreshScreen(){
         mixingProxyQueue.setText(mixingProxyContent.printContent());
     }
@@ -89,5 +86,32 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
         capsuleList.clear();
         refreshScreen();
     }
-
+    @FXML
+    public void initialize(){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRun = now.plusMinutes(30);
+        Timer timer = new Timer();
+        TimerTask flushTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    flushCapsules();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(flushTask, Duration.between(now,nextRun).toMillis(), Duration.ofMinutes(30).toMillis());
+        TimerTask refreshTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    refreshScreen();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(refreshTask, Date.from(Instant.now()), Duration.ofSeconds(5).toMillis());
+    }
 }
