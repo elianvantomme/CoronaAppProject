@@ -1,22 +1,12 @@
 package services.registrar;
 
 import clients.barowner.CateringFacility;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.cell.PropertyValueFactory;
 import services.mixing_proxy.MixingProxyInterface;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -33,7 +23,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private Set<String> registeredPhoneNumbers;
     private MixingProxyInterface mixingProxyInterface;
     private KeyPair tokensKeyPair;
-    static private RegistrarContent registrarContent;
+    private static RegistrarContent registrarContent;
 
     public RegistrarInterfaceImpl () throws Exception {
         keyGenerator = KeyGenerator.getInstance("AES");

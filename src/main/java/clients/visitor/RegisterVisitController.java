@@ -2,32 +2,23 @@ package clients.visitor;
 
 import clients.doctor.DoctorClient;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import services.matching_service.MatchingServiceInterface;
-import services.matching_service.MatchingServiceInterfaceImp;
 import services.mixing_proxy.MixingProxyInterface;
-import services.registrar.RegistrarContent;
 import services.registrar.RegistrarInterface;
-import services.registrar.RegistrarInterfaceImpl;
-import services.registrar.Token;
 
-import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.security.SignedObject;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -100,6 +91,8 @@ public class RegisterVisitController {
         final LocalDateTime[] endTimeInterval = {beginTimeInterval[0].plusMinutes(30)};
         if (!validTokens.isEmpty()){
             sendCapsule(randomDouble, cateringFacilityInfoString, pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
+            logs.add(new LogEntry(Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
+
             if(signedHash != null){
                 qrDataStringField.setVisible(false);
                 SubmitButtonDataString.setVisible(false);
@@ -160,7 +153,7 @@ public class RegisterVisitController {
         );
         capsules.add(capsule);
         System.out.println(capsule);
-        logs.add(new LogEntry((Token) signedToken.getObject(), Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
+//        logs.add(new LogEntry((Token) signedToken.getObject(), Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
         signedHash = mixingProxyImpl.registerVisit(capsule);
         System.out.println(Base64.getEncoder().encodeToString(signedHash));
     }

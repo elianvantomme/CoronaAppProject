@@ -8,15 +8,15 @@ import java.util.Arrays;
 
 public class LogEntry implements Serializable {
 
-    private Token token;
+    //private Token token;
     private double random;
     private String cf;
     private byte[] hash;
     private LocalDateTime entryTime;
     private LocalDateTime leaveTime;
 
-    LogEntry(Token token, double random, String cf, byte[] hash){
-        this.token = token;
+    LogEntry( double random, String cf, byte[] hash){
+        //this.token = token;
         this.random = random;
         this.cf = cf;
         this.hash = hash;
@@ -26,9 +26,9 @@ public class LogEntry implements Serializable {
         this.leaveTime= leaveTime;
     }
 
-    public Token getToken() {
-        return token;
-    }
+//    public Token getToken() {
+//        return token;
+//    }
 
     public double getRandom() {
         return random;
@@ -53,7 +53,7 @@ public class LogEntry implements Serializable {
     @Override
     public String toString() {
         return "LogEntry{" +
-                token +
+                //token +
                 "," + random +
                 "," + cf + '\'' +
                 "," + Arrays.toString(hash) +
