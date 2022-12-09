@@ -4,6 +4,7 @@ import services.registrar.Token;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class LogEntry implements Serializable {
 
@@ -47,5 +48,17 @@ public class LogEntry implements Serializable {
 
     public LocalDateTime getLeaveTime() {
         return leaveTime;
+    }
+
+    @Override
+    public String toString() {
+        return "LogEntry{" +
+                token +
+                "," + random +
+                "," + cf + '\'' +
+                "," + Arrays.toString(hash) +
+                "," + entryTime +
+                "," + leaveTime +
+                '}';
     }
 }

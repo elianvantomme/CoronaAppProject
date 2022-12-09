@@ -185,6 +185,9 @@ public class RegisterVisitController {
 
     @FXML
     public void submitLogsDoc() throws Exception {
+        for (LogEntry log: logs) {
+            System.out.println(log);
+        }
         doctor.sendInfectedData(logs);
     }
 
