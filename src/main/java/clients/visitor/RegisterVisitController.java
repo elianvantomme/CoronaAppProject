@@ -204,7 +204,7 @@ public class RegisterVisitController {
     @FXML
     public void fetchInfectedCapsules() throws Exception {
 
-        List<Capsule> infectedCapsules= matchingServiceImpl.getInfectedCapsules();  //matchingServiceImpl.getInfectedCapsules();
+        List<Capsule> infectedCapsules= matchingServiceImpl.getInfectedCapsules();
         List<SignedObject> infectedSignedUsertokens= new ArrayList<>();
 
         for(Capsule infectedCap : infectedCapsules){
