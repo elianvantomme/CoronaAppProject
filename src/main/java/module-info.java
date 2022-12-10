@@ -10,7 +10,9 @@ module visitor.clients {
     exports clients.barowner;
 
     opens clients.visitor;
+    opens clients.doctor;
     opens services.registrar;
     opens services.mixing_proxy;
     opens services.matching_service;
+
 }

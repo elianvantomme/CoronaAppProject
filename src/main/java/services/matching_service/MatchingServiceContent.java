@@ -4,6 +4,7 @@ import clients.visitor.Capsule;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MatchingServiceContent {
@@ -60,7 +61,9 @@ public class MatchingServiceContent {
 
     public String printCapsuleList(){
         StringBuilder sb = new StringBuilder();
-        for (Capsule capsule : capsuleList) {
+        Iterator<Capsule> iterator = capsuleList.iterator();
+        while(iterator.hasNext()){
+            Capsule capsule = iterator.next();
             sb.append(capsule);
         }
         return sb.toString();
@@ -68,7 +71,9 @@ public class MatchingServiceContent {
 
     public String printUninformedCapsuleList(){
         StringBuilder sb = new StringBuilder();
-        for (Capsule capsule : uninformdInfectedCapsules) {
+        Iterator<Capsule> iterator = uninformdInfectedCapsules.iterator();
+        while(iterator.hasNext()){
+            Capsule capsule = iterator.next();
             sb.append(capsule);
         }
         return sb.toString();
@@ -76,7 +81,9 @@ public class MatchingServiceContent {
 
     public String printInformedCapsuleList(){
         StringBuilder sb = new StringBuilder();
-        for (Capsule capsule : informdInfectedCapsules) {
+        Iterator<Capsule> iterator = informdInfectedCapsules.iterator();
+        while(iterator.hasNext()){
+            Capsule capsule = iterator.next();
             sb.append(capsule);
         }
         return sb.toString();

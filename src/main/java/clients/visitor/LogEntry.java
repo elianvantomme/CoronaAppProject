@@ -5,6 +5,7 @@ import services.registrar.Token;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class LogEntry implements Serializable {
 
@@ -15,13 +16,22 @@ public class LogEntry implements Serializable {
     private LocalDateTime entryTime;
     private LocalDateTime leaveTime;
 
-    LogEntry( double random, String cf, byte[] hash){
+    LogEntry(double random, String cf, byte[] hash){
         //this.token = token;
         this.random = random;
         this.cf = cf;
-        this.hash = hash;
+        this.hash =hash;
         this.entryTime = LocalDateTime.now();
     }
+
+    public LogEntry(double random, String cf, byte[] hash, LocalDateTime entryTime, LocalDateTime leaveTime) {
+        this.random = random;
+        this.cf = cf;
+        this.hash = hash;
+        this.entryTime = entryTime;
+        this.leaveTime = leaveTime;
+    }
+
     public void setLeaveTime(LocalDateTime leaveTime){
         this.leaveTime= leaveTime;
     }
@@ -52,13 +62,18 @@ public class LogEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "LogEntry{" +
-                //token +
-                "," + random +
+        return random +
                 "," + cf + '\'' +
                 "," + Arrays.toString(hash) +
                 "," + entryTime +
-                "," + leaveTime +
-                '}';
+                "," + leaveTime;
+    }
+
+    public String printForLog() {
+        return random +
+                "/" + cf + '\'' +
+                "/" + Arrays.toString(hash) +
+                "/" + entryTime +
+                "/" + leaveTime;
     }
 }

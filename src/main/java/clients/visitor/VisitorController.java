@@ -29,8 +29,10 @@ public class VisitorController {
 
     @FXML
     public void onClickSubmitPhoneNumber() throws Exception {
+        String phoneNumber = null;
         if (!visitorPhoneNumberField.getText().equals("")){
-            validTokens = registrarImpl.loginVisitor(visitorPhoneNumberField.getText());
+            phoneNumber = visitorPhoneNumberField.getText();
+            validTokens = registrarImpl.loginVisitor(phoneNumber);
             System.out.println("validTokens = ");
             for(SignedObject signedObject : validTokens){
                 System.out.println(signedObject.getObject());
@@ -43,6 +45,7 @@ public class VisitorController {
             Parent root = loader.load();
             RegisterVisitController registerVisitController = loader.getController();
             registerVisitController.setValidTokens(validTokens);
+            registerVisitController.setPhoneNumber(phoneNumber);
             stage = new Stage();
             stage.setTitle("Corona Tracing App");
             stage.setScene(new Scene(root));

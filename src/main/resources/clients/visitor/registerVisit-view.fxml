@@ -26,12 +26,17 @@
                   </Text>
                </children>
             </Pane>
-            <Text layoutX="109.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Corona Master App" textAlignment="CENTER" wrappingWidth="222.07373046875">
+            <Text layoutX="61.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Corona Master App" textAlignment="CENTER" wrappingWidth="222.07373046875">
                <font>
                   <Font name="Comic Sans MS" size="23.0" />
                </font>
             </Text>
             <TextField fx:id="timeInterval" alignment="CENTER" editable="false" layoutX="93.0" layoutY="46.0" prefHeight="25.0" prefWidth="255.0" />
+            <Text fx:id="phoneNumberText" layoutX="307.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="phoneNumber">
+               <font>
+                  <Font name="Comic Sans MS" size="16.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
       <Button fx:id="medicButton" layoutX="562.0" layoutY="14.0" mnemonicParsing="false" onAction="#submitLogsDoc" prefHeight="31.0" prefWidth="76.0" text="Doctor" />

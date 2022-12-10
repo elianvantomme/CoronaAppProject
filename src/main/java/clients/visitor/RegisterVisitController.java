@@ -13,6 +13,8 @@ import services.matching_service.MatchingServiceInterface;
 import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarInterface;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.SignedObject;
@@ -20,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -28,7 +31,6 @@ public class RegisterVisitController {
 //    Map<LocalDateTime, String[]> visitedCFs = new HashMap<>();
     private ArrayList<String[]> visitedCFs;
     private ArrayList<Capsule> capsules;
-    private DoctorClient doctor;
     private RegistrarInterface registrarImpl;
     private MixingProxyInterface mixingProxyImpl;
     private MatchingServiceInterface matchingServiceImpl;
@@ -56,11 +58,12 @@ public class RegisterVisitController {
     private Pane infectionAlertPane;
     @FXML
     private TextField timeInterval;
+    @FXML
+    private Text phoneNumberText;
 
     public RegisterVisitController() throws Exception {
         this.visitedCFs = new ArrayList<>();
         this.capsules = new ArrayList<>();
-        this.doctor = new DoctorClient();
         this.validTokens = new ArrayList<>();
         this.usedTokens = new ArrayList<>();
         this.logs = new ArrayList<>();
@@ -72,7 +75,10 @@ public class RegisterVisitController {
         this.validTokens = validTokens;
     }
 
-    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+    public void setPhoneNumber(String phoneNumber) {
+        phoneNumberText.setText(phoneNumber);
+        this.phoneNumber = phoneNumber;
+    }
 
     @FXML
     private void onClickSubmitDataString() throws Exception {
@@ -187,10 +193,12 @@ public class RegisterVisitController {
 
     @FXML
     public void submitLogsDoc() throws Exception {
+        FileWriter printWriter = new FileWriter(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"))+"-"+phoneNumber+"-logs.txt");
         for (LogEntry log: logs) {
+            printWriter.write(log.printForLog()+"\n");
             System.out.println(log);
         }
-        doctor.sendInfectedData(logs);
+        printWriter.close();
     }
 
     @FXML
@@ -204,10 +212,11 @@ public class RegisterVisitController {
                 if(infectedCap.compareTo(cap)){
                     infectedSignedUsertokens.add(cap.getSignedUserToken());
                     infectionAlertPane.setVisible(true);
+                    SubmitButtonDataString.setVisible(false);
+                    qrDataStringField.setVisible(false);
                 }
             }
         }
-        //TODO return list to matching server
         matchingServiceImpl.receiveInfectedSignedUsertokens(infectedSignedUsertokens);
     }
     public void fetchNewTokens() throws Exception {

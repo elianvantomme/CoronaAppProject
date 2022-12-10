@@ -106,6 +106,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     }
     @Override
     public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
+        System.out.println(phoneNumber);
         LocalDate date = LocalDate.now();
         List<Token> newUserTokens = new ArrayList<>();
         List<SignedObject> newUserSignedTokens = new ArrayList<>();
