@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="234.0" prefWidth="329.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clients.doctor.DoctorClient">
+   <children>
+      <Button layoutX="37.0" layoutY="139.0" mnemonicParsing="false" onAction="#uploadPatientFile" prefHeight="51.0" prefWidth="256.0" text="Upload Patient File" />
+      <Text layoutX="97.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doctor Interface ">
+         <font>
+            <Font name="Comic Sans MS" size="16.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

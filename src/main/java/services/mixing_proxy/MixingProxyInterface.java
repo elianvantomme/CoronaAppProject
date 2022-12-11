@@ -1,6 +1,12 @@
 package services.mixing_proxy;
 
-import java.rmi.Remote;
+import clients.visitor.Capsule;
 
-public interface MixingProxyInterface extends Remote {
+import java.rmi.Remote;
+import java.security.PublicKey;
+
+public interface MixingProxyInterface extends Remote{
+
+    void setRegistrarPublicKey(PublicKey publicKey) throws Exception;
+    byte[] registerVisit(Capsule capsule) throws Exception;
 }
