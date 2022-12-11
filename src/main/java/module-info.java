@@ -5,6 +5,14 @@ module visitor.clients {
 
     exports clients.visitor;
     exports services.registrar;
+    exports services.mixing_proxy;
+    exports services.matching_service;
+    exports clients.barowner;
 
     opens clients.visitor;
+    opens clients.doctor;
+    opens services.registrar;
+    opens services.mixing_proxy;
+    opens services.matching_service;
+
 }
