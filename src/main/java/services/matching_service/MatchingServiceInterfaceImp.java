@@ -78,7 +78,6 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
 
         if(checkSignature(signedObject)){
             System.out.println("is gesigned door een dokter");
-            //TODO doe iets als het geen geldige signature is, maar dit zou nooit mogen gebeuren.
         }
 
         List<LogEntry> infectedLogs = (List<LogEntry>) signedObject.getObject();

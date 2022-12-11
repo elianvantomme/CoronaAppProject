@@ -1,9 +1,7 @@
 package services.registrar;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 
 public class Token implements Serializable {

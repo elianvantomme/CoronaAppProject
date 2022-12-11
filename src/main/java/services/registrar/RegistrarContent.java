@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class RegistrarContent {
-    static private List<String> visitorList;
-    static private List<CateringFacility> cateringFacilityList;
-    static private Map<String, List<Token>> oldTokensMap;
-    static private Map<String, List<Token>> validTokensMap;
+    private static List<String> visitorList;
+    private static List<CateringFacility> cateringFacilityList;
+    private static Map<String, List<Token>> oldTokensMap;
+    private static Map<String, List<Token>> validTokensMap;
 
     public RegistrarContent() {
         visitorList = new ArrayList<>();

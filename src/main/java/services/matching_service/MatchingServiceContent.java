@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MatchingServiceContent {
-    static private List<Capsule> capsuleList;
-    static private List<Capsule> uninformdInfectedCapsules;
-    static private List<Capsule> informdInfectedCapsules;
-    static private List<PublicKey> doctorPublicKeys;
-    static private List<String> cateringFacilityNym;
+    private static List<Capsule> capsuleList;
+    private static List<Capsule> uninformdInfectedCapsules;
+    private static List<Capsule> informdInfectedCapsules;
+    private static List<PublicKey> doctorPublicKeys;
+    private static List<String> cateringFacilityNym;
 
     public MatchingServiceContent(){
         capsuleList = new ArrayList<>();

@@ -107,7 +107,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     @Override
     public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
         System.out.println(phoneNumber);
-        LocalDate date = LocalDate.now();
         List<Token> newUserTokens = new ArrayList<>();
         List<SignedObject> newUserSignedTokens = new ArrayList<>();
         Map<String, List<Token>> oldTokensMap = registrarContent.getOldTokensMap();
@@ -119,10 +118,6 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         signature.initSign(tokensKeyPair.getPrivate());
         //Create 48 new signed tokens for a certain phone number
         for (int i = 0; i < 48; i++) {
-//            byte[] tokenString = (String.valueOf(Math.random()).concat(date.toString())).getBytes(StandardCharsets.UTF_8);
-//            signature.update(tokenString);
-//            String signedToken = Base64.getEncoder().encodeToString(tokenString);
-//            newUserTokens.add(signedToken);
             Token token = new Token();
             SignedObject signedToken = new SignedObject(token, tokensKeyPair.getPrivate(), signature);
             newUserSignedTokens.add(signedToken);

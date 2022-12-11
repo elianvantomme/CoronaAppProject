@@ -1,15 +1,11 @@
 package clients.visitor;
 
-import services.registrar.Token;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Base64;
 
 public class LogEntry implements Serializable {
 
-    //private Token token;
     private double random;
     private String cf;
     private byte[] hash;
@@ -17,7 +13,6 @@ public class LogEntry implements Serializable {
     private LocalDateTime leaveTime;
 
     LogEntry(double random, String cf, byte[] hash){
-        //this.token = token;
         this.random = random;
         this.cf = cf;
         this.hash =hash;
@@ -35,10 +30,6 @@ public class LogEntry implements Serializable {
     public void setLeaveTime(LocalDateTime leaveTime){
         this.leaveTime= leaveTime;
     }
-
-//    public Token getToken() {
-//        return token;
-//    }
 
     public double getRandom() {
         return random;

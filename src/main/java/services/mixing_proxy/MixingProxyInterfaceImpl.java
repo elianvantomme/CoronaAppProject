@@ -7,7 +7,6 @@ import javafx.scene.control.TextArea;
 import services.matching_service.MatchingServiceInterface;
 import services.registrar.Token;
 
-import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -23,7 +22,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
     private List<Token> usedTokens;
     private KeyPair mixingProxyKeyPair;
     private Signature sig;
-    static private MixingProxyContent mixingProxyContent;
+    private static MixingProxyContent mixingProxyContent;
     private MatchingServiceInterface matchingServiceImpl;
 
     /**********FXML VARIABLES*********/
@@ -44,8 +43,7 @@ public class MixingProxyInterfaceImpl extends UnicastRemoteObject implements Mix
 
     public KeyPair generateKeyPair() throws Exception{
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        return keyPair;
+        return keyPairGenerator.generateKeyPair();
     }
 
     @Override

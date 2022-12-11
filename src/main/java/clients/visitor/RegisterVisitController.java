@@ -1,6 +1,5 @@
 package clients.visitor;
 
-import clients.doctor.DoctorClient;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,7 +13,6 @@ import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarInterface;
 
 import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.SignedObject;
@@ -27,8 +25,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class RegisterVisitController {
-    //TODO gaan verwijderen van de visistedCFs na een bepaald aantal dagen
-//    Map<LocalDateTime, String[]> visitedCFs = new HashMap<>();
     private ArrayList<String[]> visitedCFs;
     private ArrayList<Capsule> capsules;
     private RegistrarInterface registrarImpl;
@@ -61,7 +57,7 @@ public class RegisterVisitController {
     @FXML
     private Text phoneNumberText;
 
-    public RegisterVisitController() throws Exception {
+    public RegisterVisitController() {
         this.visitedCFs = new ArrayList<>();
         this.capsules = new ArrayList<>();
         this.validTokens = new ArrayList<>();
@@ -99,7 +95,7 @@ public class RegisterVisitController {
                 .plusMinutes(30 * (dateTime.getMinute() / 30))};
         final LocalDateTime[] endTimeInterval = {beginTimeInterval[0].plusMinutes(30)};
         if (!validTokens.isEmpty()){
-            sendCapsule(randomDouble, cateringFacilityInfoString, pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
+            sendCapsule(pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
             logs.add(new LogEntry(Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
 
             if(signedHash != null){
@@ -114,7 +110,7 @@ public class RegisterVisitController {
                 GraphicsContext context = FigureDisplay.getGraphicsContext2D();
                 String colorValueString = Base64.getEncoder().encodeToString(signedHash).substring(0,3);
                 StringBuffer sb = new StringBuffer();
-                char ch[] =  colorValueString.toCharArray();
+                char[] ch =  colorValueString.toCharArray();
                 for (char c : ch) {
                     sb.append(Integer.toHexString(c));
                 }
@@ -131,7 +127,7 @@ public class RegisterVisitController {
                     public void run() {
                         try {
                             if (!leavingCateringFacility) {
-                                sendCapsule(randomDouble, cateringFacilityInfoString, pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
+                                sendCapsule(pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
                                 beginTimeInterval[0] = endTimeInterval[0];
                                 endTimeInterval[0] = endTimeInterval[0].plusMinutes(30);
                                 String timeIntervalString = beginTimeInterval[0] +" - "+ endTimeInterval[0];
@@ -149,13 +145,11 @@ public class RegisterVisitController {
                 };
                 capsuleTimer.scheduleAtFixedRate(flushTask, Duration.between(now,nextRun).toMillis(), Duration.ofMinutes(30).toMillis());
 
-            } else {
-                //TODO: genereer misschien een scherm waarop staat dat je een foute code hebt gestuurd
             }
         }
     }
 
-    private void sendCapsule(String randomDouble, String cateringFacilityInfoString, String pseudonymHash, LocalDateTime beginTimeInterval, LocalDateTime endTimeInterval) throws Exception {
+    private void sendCapsule(String pseudonymHash, LocalDateTime beginTimeInterval, LocalDateTime endTimeInterval) throws Exception {
         SignedObject signedToken = validTokens.remove(0);
         usedTokens.add(signedToken);
         Capsule capsule = new Capsule(
@@ -166,7 +160,6 @@ public class RegisterVisitController {
         );
         capsules.add(capsule);
         System.out.println(capsule);
-//        logs.add(new LogEntry((Token) signedToken.getObject(), Double.parseDouble(randomDouble), cateringFacilityInfoString, pseudonymHash.getBytes()));
         signedHash = mixingProxyImpl.registerVisit(capsule);
         System.out.println(Base64.getEncoder().encodeToString(signedHash));
     }
@@ -181,10 +174,6 @@ public class RegisterVisitController {
         FigureDisplay.setVisible(false);
         timeInterval.setVisible(false);
         timeInterval.clear();
-        LocalDateTime leaveTime = LocalDateTime.now();
-//      String[] temp =visitedCFs.get(visitedCFs.size()-1);
-//      temp[1] = leaveTime.toString();
-
         LogEntry log = logs.get(logs.size()-1);
         log.setLeaveTime(LocalDateTime.now());
         qrDataStringField.clear();

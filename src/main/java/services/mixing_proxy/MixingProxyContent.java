@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MixingProxyContent {
-    static private List<Capsule> capsuleList;
-    static private PublicKey registrarPublicKey;
+    private static List<Capsule> capsuleList;
+    private static PublicKey registrarPublicKey;
 
     public MixingProxyContent(){
         capsuleList = new ArrayList<>();

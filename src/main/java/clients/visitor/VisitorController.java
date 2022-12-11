@@ -8,15 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import services.registrar.RegistrarInterface;
-import services.registrar.Token;
 
-import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.SignedObject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VisitorController {
     @FXML

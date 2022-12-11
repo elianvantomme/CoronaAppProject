@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class BarOwnerClient {
-    private Set<String> pseudonymSet = new HashSet<>();
     private Scanner sc = new Scanner(System.in);
     private String pseudonym;
 
