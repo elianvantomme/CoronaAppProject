@@ -1,7 +1,6 @@
 package services.matching_service;
 
 import clients.visitor.Capsule;
-import clients.visitor.LogEntry;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -15,5 +14,7 @@ public interface MatchingServiceInterface extends Remote {
     void receiveLogs(SignedObject signedObject) throws Exception;
     void addDoctorPublicKey(PublicKey publicKey) throws Exception;
     List<Capsule> getInfectedCapsules() throws Exception;
+    void receivePseudonyms(List<String> pseudonyms) throws Exception;
     void receiveInfectedSignedUsertokens(List<SignedObject> infectedSignedUsertokens) throws IOException, ClassNotFoundException;
+
 }

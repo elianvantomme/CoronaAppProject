@@ -7,19 +7,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="services.matching_service.MatchingServiceInterfaceImp">
+<AnchorPane prefHeight="400.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="services.matching_service.MatchingServiceInterfaceImp">
    <children>
-      <Text layoutX="185.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Matching Service Interface">
+      <Text layoutX="285.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Matching Service Interface">
          <font>
             <Font name="Comic Sans MS" size="19.0" />
          </font>
       </Text>
-      <Button fx:id="refreshButton" layoutX="281.0" layoutY="43.0" mnemonicParsing="false" onAction="#refreshScreen" text="Refresh" />
-      <HBox layoutX="9.0" layoutY="100.0" prefHeight="286.0" prefWidth="600.0">
+      <Button fx:id="refreshButton" layoutX="384.0" layoutY="41.0" mnemonicParsing="false" onAction="#refreshScreen" text="Refresh" />
+      <HBox layoutX="9.0" layoutY="100.0" prefHeight="286.0" prefWidth="800.0">
          <children>
             <TextArea fx:id="receivedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="200.0" />
             <TextArea fx:id="uninformedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="200.0" />
             <TextArea fx:id="informedCapsulesTextArea" editable="false" prefHeight="286.0" prefWidth="200.0" />
+            <TextArea fx:id="pseudonymsTextArea" editable="false" prefHeight="286.0" prefWidth="200.0" />
          </children>
       </HBox>
       <Text layoutX="234.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Uninformed Capsules" underline="true">
@@ -33,6 +34,11 @@
          </font>
       </Text>
       <Text layoutX="428.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Acknowledge capsules" underline="true">
+         <font>
+            <Font name="Comic Sans MS" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="666.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pseudonyms" underline="true">
          <font>
             <Font name="Comic Sans MS" size="16.0" />
          </font>

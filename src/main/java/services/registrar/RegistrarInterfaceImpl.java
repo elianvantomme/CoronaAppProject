@@ -1,6 +1,7 @@
 package services.registrar;
 
 import clients.barowner.CateringFacility;
+import services.matching_service.MatchingServiceInterface;
 import services.mixing_proxy.MixingProxyInterface;
 
 import javax.crypto.KeyGenerator;
@@ -13,7 +14,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 public class RegistrarInterfaceImpl extends UnicastRemoteObject implements RegistrarInterface {
@@ -22,6 +26,7 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     private SecretKey masterSecretKey;
     private Set<String> registeredPhoneNumbers;
     private MixingProxyInterface mixingProxyInterface;
+    private MatchingServiceInterface matchingServiceInterface;
     private KeyPair tokensKeyPair;
     private static RegistrarContent registrarContent;
 
@@ -33,8 +38,12 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         mixingProxyInterface = (MixingProxyInterface) LocateRegistry.
                  getRegistry("localhost", 4002).
                  lookup("MixingProxyService");
+        matchingServiceInterface = (MatchingServiceInterface) LocateRegistry
+                .getRegistry("localhost",4001)
+                .lookup("MatchingService");
         tokensKeyPair = generateKeyPairForSigningTokens();
         registrarContent = new RegistrarContent();
+        sendPseudonyms();
     }
 
     public KeyPair generateKeyPairForSigningTokens() throws Exception{
@@ -48,18 +57,21 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
     @Override
     public String loginCF(CateringFacility cateringFacility) throws NoSuchAlgorithmException, InvalidKeySpecException {
         LocalDate localDate = LocalDate.now();
-
         //Generate the Daily Secret key from: master secret key, CF info, day
-        String KDFinput = cateringFacility.toString() + masterSecretKey.toString() + localDate;
+        String KDFinput = cateringFacility.getAddress() + masterSecretKey.toString() + localDate;
         SecretKeyFactory kf = SecretKeyFactory.getInstance("DESede");
         KeySpec keySpecs = new SecretKeySpec(KDFinput.getBytes(StandardCharsets.UTF_8), "AES");
         SecretKey dailySecretKey = kf.generateSecret(keySpecs);
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] byteArray = dailySecretKey.toString().concat(cateringFacility.toString()).concat(localDate.toString()).getBytes(StandardCharsets.UTF_8);
-        registrarContent.addCateringFacility(cateringFacility);
+        String pseudonym = Base64.getEncoder().encodeToString(md.digest(byteArray));
+        cateringFacility.setPseudonym(pseudonym);
+        if (!registrarContent.containsCF(cateringFacility)){
+            registrarContent.addCateringFacility(cateringFacility);
+        }
         refreshScreen();
-        return Base64.getEncoder().encodeToString(md.digest(byteArray));
+        return pseudonym;
     }
 
     @Override
@@ -70,7 +82,28 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         refreshScreen();
         return generateNewTokens(phoneNumber);
     }
+    public void sendPseudonyms() throws Exception {
+        List<String> pseudonyms = new ArrayList<>();
+        Timer timer = new Timer();
+        LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).plusDays(1);
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    pseudonyms.clear();
+                    for (CateringFacility cateringFacility: RegistrarContent.getCateringFacilityList()) {
+                        pseudonyms.add(cateringFacility.getPseudonym());
 
+                    }
+                    refreshScreen();
+                    matchingServiceInterface.receivePseudonyms(pseudonyms);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(task, Duration.between(LocalDateTime.now(), todayMidnight).toMillis() , Duration.ofDays(1).toMillis());
+    }
     @Override
     public List<SignedObject> generateNewTokens(String phoneNumber) throws Exception {
         LocalDate date = LocalDate.now();
@@ -98,7 +131,15 @@ public class RegistrarInterfaceImpl extends UnicastRemoteObject implements Regis
         return newUserSignedTokens;
     }
     public void refreshScreen(){
+        System.out.println("------ CONTENT REGISTRAR ------");
         System.out.println(registrarContent.printVisitorList());
         System.out.println(registrarContent.printCateringFacilityList());
+        System.out.println("""
+
+
+
+
+
+                """);
     }
 }

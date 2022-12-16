@@ -41,6 +41,10 @@ public class RegistrarContent {
         return validTokensMap.get(phoneNumber);
     }
 
+    public static List<CateringFacility> getCateringFacilityList() {
+        return cateringFacilityList;
+    }
+
     public void addValidTokens(String key, List<Token> tokens){
         validTokensMap.put(key,tokens);
     }
@@ -58,5 +62,14 @@ public class RegistrarContent {
             sb.append(cf.printCateringFacility()).append("\n").append("\n");
         }
         return sb.toString();
+    }
+
+    public boolean containsCF(CateringFacility cateringFacility) {
+        for (CateringFacility cf : cateringFacilityList) {
+            if (cf.equals(cateringFacility)){
+                return true;
+            }
+        }
+        return false;
     }
 }

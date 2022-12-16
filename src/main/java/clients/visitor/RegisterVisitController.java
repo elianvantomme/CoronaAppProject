@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import services.matching_service.MatchingServiceInterface;
 import services.mixing_proxy.MixingProxyInterface;
 import services.registrar.RegistrarInterface;
@@ -53,6 +54,8 @@ public class RegisterVisitController {
     private Button infectedButton;
     @FXML
     private Pane infectionAlertPane;
+    @FXML
+    private TextField timeInterval;
 
     public RegisterVisitController() throws Exception {
         this.visitedCFs = new ArrayList<>();
@@ -100,6 +103,8 @@ public class RegisterVisitController {
                 infectedButton.setVisible(false);
                 leaveCFButton.setVisible(true);
                 FigureDisplay.setVisible(true);
+                timeInterval.setVisible(true);
+                timeInterval.clear();
                 GraphicsContext context = FigureDisplay.getGraphicsContext2D();
                 String colorValueString = Base64.getEncoder().encodeToString(signedHash).substring(0,3);
                 StringBuffer sb = new StringBuffer();
@@ -109,7 +114,7 @@ public class RegisterVisitController {
                 }
                 context.setFill(Color.web(sb.toString()));
                 context.fillRect(20,20,180,180);
-
+                timeInterval.setText(beginTimeInterval[0] +" - "+ endTimeInterval[0]);
                 //Send capsule
                 LocalDateTime now = LocalDateTime.now();
                 LocalDateTime nextRun = now.plusMinutes(30);
@@ -123,6 +128,8 @@ public class RegisterVisitController {
                                 sendCapsule(randomDouble, cateringFacilityInfoString, pseudonymHash, beginTimeInterval[0], endTimeInterval[0]);
                                 beginTimeInterval[0] = endTimeInterval[0];
                                 endTimeInterval[0] = endTimeInterval[0].plusMinutes(30);
+                                String timeIntervalString = beginTimeInterval[0] +" - "+ endTimeInterval[0];
+                                timeInterval.setText(timeIntervalString);
                             }
                             else{
                                 leavingCateringFacility = false;
@@ -166,6 +173,8 @@ public class RegisterVisitController {
         infectedButton.setVisible(true);
         leaveCFButton.setVisible(false);
         FigureDisplay.setVisible(false);
+        timeInterval.setVisible(false);
+        timeInterval.clear();
         LocalDateTime leaveTime = LocalDateTime.now();
 //      String[] temp =visitedCFs.get(visitedCFs.size()-1);
 //      temp[1] = leaveTime.toString();
@@ -215,6 +224,7 @@ public class RegisterVisitController {
         medicButton.setVisible(false);
         infectedButton.setVisible(false);
         infectionAlertPane.setVisible(false);
+        timeInterval.setVisible(false);
         try {
             Registry registrarRegistry = LocateRegistry.getRegistry("localhost",4000);
             registrarImpl = (RegistrarInterface) registrarRegistry.lookup("RegistrarService");

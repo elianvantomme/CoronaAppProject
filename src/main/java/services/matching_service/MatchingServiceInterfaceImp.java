@@ -26,6 +26,8 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
     private TextArea uninformedCapsulesTextArea;
     @FXML
     private TextArea informedCapsulesTextArea;
+    @FXML
+    private TextArea pseudonymsTextArea;
 
     public MatchingServiceInterfaceImp() throws Exception{
         matchingServiceContent = new MatchingServiceContent();
@@ -96,6 +98,12 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
         }
     }
 
+    @Override
+    public void receivePseudonyms(List<String> pseudonyms) throws Exception{
+        matchingServiceContent.addNewPseudonyms(pseudonyms);
+        System.out.println(pseudonyms);
+    }
+
     public boolean containsTimeInterval(LocalDateTime logStartDate, LocalDateTime logEndDate, LocalDateTime capStartDate, LocalDateTime capEndDate){
         for (LocalDateTime dateTime = capStartDate; dateTime.isBefore(capEndDate); dateTime = dateTime.plusMinutes(1)) {
             if (dateTime.isAfter(logStartDate) && dateTime.isBefore(logEndDate)){
@@ -109,6 +117,7 @@ public class MatchingServiceInterfaceImp extends UnicastRemoteObject implements 
         receivedCapsulesTextArea.setText(matchingServiceContent.printCapsuleList());
         uninformedCapsulesTextArea.setText(matchingServiceContent.printUninformedCapsuleList());
         informedCapsulesTextArea.setText(matchingServiceContent.printInformedCapsuleList());
+        pseudonymsTextArea.setText(matchingServiceContent.printPseudonyms());
     }
     @FXML
     public void initialize(){

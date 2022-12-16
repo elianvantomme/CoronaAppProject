@@ -6,10 +6,11 @@ import java.nio.charset.StandardCharsets;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.MessageDigest;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 public class BarOwnerClient {
     private Set<String> pseudonymSet = new HashSet<>();
@@ -31,26 +32,41 @@ public class BarOwnerClient {
             String phoneNumber = sc.nextLine();
             CateringFacility cateringFacility = new CateringFacility(businessNumber, name, address, phoneNumber);
 
-            pseudonym = registrarImpl.loginCF(cateringFacility);
-            System.out.println(pseudonym);
-            System.out.println("The qr data string for");
-            //TODO generate the QR code based on the random value, CF info, hash
-            double randomDouble = Math.random();
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] byteArray = String.valueOf(randomDouble).concat(pseudonym).getBytes(StandardCharsets.UTF_8);
-            StringBuilder sb = new StringBuilder();
-            sb.append(randomDouble).append("@")
-                    .append(cateringFacility.toString()).append("@")
-                    .append(Base64.getEncoder().encodeToString(md.digest(byteArray)));
-            String qrDataString = sb.toString();
-            System.out.println(qrDataString);
-            while(true){
+            generateDailyQRCode(registrarImpl, cateringFacility);
+            Timer timer = new Timer();
+            LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).plusDays(1);
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        generateDailyQRCode(registrarImpl, cateringFacility);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-            }
+                }
+            };
+            timer.scheduleAtFixedRate(task, Duration.between(LocalDateTime.now(), todayMidnight).toMillis() , Duration.ofDays(1).toMillis());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void generateDailyQRCode(RegistrarInterface registrarImpl, CateringFacility cateringFacility) throws Exception {
+        pseudonym = registrarImpl.loginCF(cateringFacility);
+        System.out.println(pseudonym);
+        System.out.println("The qr data string for");
+        double randomDouble = Math.random();
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] byteArray = String.valueOf(randomDouble).concat(pseudonym).getBytes(StandardCharsets.UTF_8);
+        StringBuilder sb = new StringBuilder();
+        sb.append(randomDouble).append("@")
+                .append(cateringFacility).append("@")
+                .append(Base64.getEncoder().encodeToString(md.digest(byteArray)));
+        String qrDataString = sb.toString();
+        System.out.println(qrDataString);
+    }
+
     public static void main(String[] args) {
         BarOwnerClient main = new BarOwnerClient();
         main.runClient();

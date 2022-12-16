@@ -13,7 +13,7 @@ public class MatchingServiceServer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MatchingServiceServer.class.getResource("matchingServiceInterface-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 818, 400);
         stage.setTitle("Matching Service Interface");
         stage.setScene(scene);
         stage.show();

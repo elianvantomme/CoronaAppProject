@@ -11,12 +11,14 @@ public class MatchingServiceContent {
     static private List<Capsule> uninformdInfectedCapsules;
     static private List<Capsule> informdInfectedCapsules;
     static private List<PublicKey> doctorPublicKeys;
+    static private List<String> cateringFacilityNym;
 
     public MatchingServiceContent(){
         capsuleList = new ArrayList<>();
         uninformdInfectedCapsules = new ArrayList<>();
         informdInfectedCapsules = new ArrayList<>();
         doctorPublicKeys = new ArrayList<>();
+        cateringFacilityNym = new ArrayList<>();
     }
 
     public void addDoctorKey(PublicKey key){
@@ -49,6 +51,11 @@ public class MatchingServiceContent {
 
     public void removeNormalCapsule(Capsule capsule){
         capsuleList.remove(capsule);
+    }
+
+    public void addNewPseudonyms(List<String> pseudonyms) {
+        cateringFacilityNym.clear();
+        cateringFacilityNym.addAll(pseudonyms);
     }
 
     public String printCapsuleList(){
@@ -85,5 +92,13 @@ public class MatchingServiceContent {
 
     public void setCapsuleList(List<Capsule> tempList) {
         capsuleList = tempList;
+    }
+
+    public String printPseudonyms() {
+        StringBuilder sb = new StringBuilder();
+        for (String string : cateringFacilityNym) {
+            sb.append(string).append("\n");
+        }
+        return sb.toString();
     }
 }

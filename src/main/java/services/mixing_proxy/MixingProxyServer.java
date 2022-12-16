@@ -13,7 +13,7 @@ public class MixingProxyServer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MixingProxyServer.class.getResource("mixingProxyInterface-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 336, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 422, 400);
         stage.setTitle("Mixing Proxy Interface");
         stage.setScene(scene);
         stage.show();
